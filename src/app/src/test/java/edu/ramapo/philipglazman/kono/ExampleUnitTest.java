@@ -1,4 +1,4 @@
-package com.philipglazman.kono;
+package edu.ramapo.philipglazman.kono;
 
 import org.junit.Test;
 
