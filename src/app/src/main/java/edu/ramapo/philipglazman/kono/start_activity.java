@@ -3,6 +3,7 @@ package edu.ramapo.philipglazman.kono;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 public class start_activity extends AppCompatActivity {
 
@@ -16,8 +17,12 @@ public class start_activity extends AppCompatActivity {
      * Called when user taps the start button.
      * @param view
      */
-    public void startGame(View view)
+    public void startNewGame(View view)
     {
-
+        String message = "test";
+        TextView textView = new TextView(this);
+        textView.setTextSize(40);
+        textView.setText(message);
+        setContentView(textView);
     }
 }
