@@ -60,9 +60,11 @@ public class new_game extends AppCompatActivity {
         String boardSize = boardSizeButton.getText().toString();
 
 
-        Intent intent = new Intent(this, new_game.class);
+        Intent intent = new Intent(this, main_activity.class);
         intent.putExtra("boardSize",boardSize);
         intent.putExtra("humanPlayerColor",humanPlayerColor);
+
+        startActivity( intent );
 
     }
 
