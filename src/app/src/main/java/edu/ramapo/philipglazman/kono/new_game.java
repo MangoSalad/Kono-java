@@ -1,9 +1,14 @@
 package edu.ramapo.philipglazman.kono;
 
 import android.content.Intent;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.Random;
@@ -13,29 +18,51 @@ public class new_game extends AppCompatActivity {
     private Random randomGenerator =  new Random();
     private char humanPlayerColor = 'x';
     private char computerPlayerColor = 'x';
+    private String firstPlayer = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_game);
 
-//        Intent intent = getIntent();
-//
-////        String message = intent.getStringExtra("startType");
-////        TextView textView = new TextView(this);
-////        textView.setTextSize(40);
-////        textView.setText(message);
-////        setContentView(textView);
-        //randomGenerator = new Random(System.currentTimeMillis());
-        //randomGenerator.setSeed(System.currentTimeMillis());
         choosePlayers();
     }
 
     /**
      * Submits settings for game and starts main activity.
      */
-    public void readySubmit()
+    public void readySubmit(View view)
     {
+        // Get selected radio button for human player color.
+        if(firstPlayer.equals("human"))
+        {
+            RadioGroup choosePlayerColor = (RadioGroup) findViewById(R.id.choosePlayerColor_rg);
+            RadioButton playerColorChosen = (RadioButton) findViewById(choosePlayerColor.getCheckedRadioButtonId());
+
+            String humanPlayer = playerColorChosen.getText().toString();
+
+            if(humanPlayer.equals("Black"))
+            {
+                humanPlayerColor='b';
+                computerPlayerColor='w';
+            }
+            else if(humanPlayer.equals("White"))
+            {
+                humanPlayerColor='w';
+                computerPlayerColor='b';
+            }
+        }
+
+        // Get selected radio button for board size.
+        RadioGroup chooseBoardSize = (RadioGroup) findViewById(R.id.chooseBoardSize_rg);
+        RadioButton boardSizeButton = (RadioButton) findViewById(chooseBoardSize.getCheckedRadioButtonId());
+
+        String boardSize = boardSizeButton.getText().toString();
+
+
+        Intent intent = new Intent(this, new_game.class);
+        intent.putExtra("boardSize",boardSize);
+        intent.putExtra("humanPlayerColor",humanPlayerColor);
 
     }
 
@@ -55,6 +82,9 @@ public class new_game extends AppCompatActivity {
     private void randomPlayerColor()
     {
         int randomNumber = randomGenerator.nextInt(2);
+
+        firstPlayer = "computer";
+
         if(randomNumber>0)
         {
             computerPlayerColor = 'b';
@@ -79,7 +109,9 @@ public class new_game extends AppCompatActivity {
 
     private void askHumanForColor()
     {
-
+        View linearLayout = findViewById(R.id.choosePlayerColor);
+        linearLayout.setVisibility(View.VISIBLE);
+        firstPlayer = "human";
     }
 
     private void announceDiceRoll(int humanDiceRoll, int computerDiceRoll)
@@ -107,18 +139,18 @@ public class new_game extends AppCompatActivity {
         {
             randomPlayerColor();
         }
-//
-//        // Human picks player color first.
-//        else if(humanDiceRoll > computerDiceRoll)
-//        {
-//            askHumanForColor();
-//        }
-//
-//        // Try rolling again.
-//        else
-//        {
-//            choosePlayers();
-//        }
+
+        // Human picks player color first.
+        else if(humanDiceRoll > computerDiceRoll)
+        {
+            askHumanForColor();
+        }
+
+        // Try rolling again.
+        else
+        {
+            choosePlayers();
+        }
 
     }
 
