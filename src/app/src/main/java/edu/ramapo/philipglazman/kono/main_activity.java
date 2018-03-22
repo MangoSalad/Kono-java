@@ -15,21 +15,23 @@ public class main_activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_activity);
 
-        displayBoard();
+        GridView gridview = (GridView) findViewById(R.id.gridView);
+        gridview.setAdapter(new ImageAdapter(this));
+        //displayBoard();
     }
 
     // Programatically display board.
-    public void displayBoard()
-    {
-        //        GridView grid = new GridView(this);
-////        grid.setLayoutParams(new GridView.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
-////        grid.setBackgroundColor(Color.WHITE);
-//        grid.setNumColumns(3);
-////        grid.setColumnWidth(GridView.AUTO_FIT);
-////        grid.setVerticalSpacing(5);
-////        grid.setHorizontalSpacing(5);
-////        grid.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
-//        setContentView(grid);
-
-    }
+//    public void displayBoard()
+//    {
+//        //        GridView grid = new GridView(this);
+//////        grid.setLayoutParams(new GridView.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
+//////        grid.setBackgroundColor(Color.WHITE);
+////        grid.setNumColumns(3);
+//////        grid.setColumnWidth(GridView.AUTO_FIT);
+//////        grid.setVerticalSpacing(5);
+//////        grid.setHorizontalSpacing(5);
+//////        grid.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
+////        setContentView(grid);
+//
+//    }
 }
