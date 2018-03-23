@@ -6,14 +6,42 @@ package edu.ramapo.philipglazman.kono;
 
 public class Round {
 
-    private String firstPlayer;
+    private String currentPlayer;
     private String humanPlayerColor;
     private String computerPlayerColor;
 
     public Round(String afirstPlayer, String ahumanPlayerColor, String acomputerPlayerColor)
     {
-        firstPlayer = afirstPlayer;
+        currentPlayer = afirstPlayer;
         humanPlayerColor = ahumanPlayerColor;
         computerPlayerColor = acomputerPlayerColor;
     }
+
+    public void setNextTurn()
+    {
+        if(currentPlayer.equals("human"))
+        {
+            currentPlayer="computer";
+        }
+        else if(currentPlayer.equals("computer"))
+        {
+            currentPlayer="human";
+        }
+    }
+
+    public String getCurrentTurn()
+    {
+        return currentPlayer;
+    }
+
+    public String getComputerPlayerColor()
+    {
+        return computerPlayerColor;
+    }
+
+    public String getHumanPlayerColor()
+    {
+        return humanPlayerColor;
+    }
+
 }

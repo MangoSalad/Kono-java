@@ -12,6 +12,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private final int WHITE_COLOR = Color.LTGRAY;
 
     private Board board;
+    private Round round;
     private ListAdapter boardView;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -44,10 +46,39 @@ public class MainActivity extends AppCompatActivity {
         String computerPlayerColor = getIntent().getStringExtra("COMPUTER_PLAYER_COLOR");
         String firstPlayer = getIntent().getStringExtra("FIRST_PLAYER");
 
-        writeToMessageFeed("It is "+firstPlayer+"'s turn.");
+        round = new Round(firstPlayer, humanPlayerColor,computerPlayerColor);
 
+        setComputerModeButton();
         createTable();
+        announceGameSettings();
 
+    }
+
+    private void setComputerModeButton()
+    {
+        if(round.getCurrentTurn().equals("computer"))
+        {
+            Button button = (Button)findViewById(R.id.computerMode);
+            button.setText("Play");
+        }
+        else if(round.getCurrentTurn().equals("human"))
+        {
+            Button button = (Button)findViewById(R.id.computerMode);
+            button.setText("Help Mode");
+        }
+
+    }
+    public void announceGameSettings()
+    {
+        // Announce board length.
+        writeToMessageFeed("Board is "+board.getBoardLength()+"x"+board.getBoardLength()+".");
+
+        // Announce player colors.
+        writeToMessageFeed("Computer will play as "+round.getComputerPlayerColor()+".");
+        writeToMessageFeed("Human will play as "+round.getHumanPlayerColor()+".");
+
+        // Announce current turn.
+        writeToMessageFeed("It is "+round.getCurrentTurn()+"'s turn.");
     }
 
     public void writeToMessageFeed(String message)
@@ -120,7 +151,20 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            writeToMessageFeed(v.getTag().toString());
+
+            if(round.getCurrentTurn().equals("computer"))
+            {
+                writeToMessageFeed("Computer must play.");
+            }
+            else if (round.getCurrentTurn().equals("human"))
+            {
+                writeToMessageFeed(round.getCurrentTurn()+" clicked "+v.getTag().toString());
+                int row = v.getTag().toString().charAt(0);
+                int column = v.getTag().toString().charAt(1);
+                //makeHumanMove();
+            }
+
+            round.setNextTurn();
         }
 
     };
