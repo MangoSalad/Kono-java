@@ -72,6 +72,11 @@ public class Board {
         return board.length;
     }
 
+    public char getPieceAtCoordinates(int row, int column)
+    {
+        return board[row][column];
+    }
+
     private boolean isOutOfBounds(int row, int column)
     {
         if(row - 1 < 0 || column - 1 < 0 || row - 1 >= board.length || column - 1 >= board.length)

@@ -11,11 +11,16 @@ import android.widget.TextView;
 
 import java.util.Random;
 
-public class new_game extends AppCompatActivity {
+public class NewGameActivity extends AppCompatActivity {
+
+    private final String BLACK = "black";
+    private final String WHITE = "white";
+    private final String COMPUTER_PLAYER = "computer";
+    private final String HUMAN_PLAYER = "human";
 
     private Random randomGenerator =  new Random();
-    private char humanPlayerColor = 'x';
-    private char computerPlayerColor = 'x';
+    private String humanPlayerColor = "";
+    private String computerPlayerColor = "";
     private String firstPlayer = "";
 
     @Override
@@ -32,22 +37,22 @@ public class new_game extends AppCompatActivity {
     public void readySubmit(View view)
     {
         // Get selected radio button for human player color.
-        if(firstPlayer.equals("human"))
+        if(firstPlayer.equals(HUMAN_PLAYER))
         {
             RadioGroup choosePlayerColor = (RadioGroup) findViewById(R.id.choosePlayerColor_rg);
             RadioButton playerColorChosen = (RadioButton) findViewById(choosePlayerColor.getCheckedRadioButtonId());
 
             String humanPlayer = playerColorChosen.getText().toString();
 
-            if(humanPlayer.equals("Black"))
+            if(humanPlayer.equals(BLACK))
             {
-                humanPlayerColor='b';
-                computerPlayerColor='w';
+                humanPlayerColor=BLACK;
+                computerPlayerColor=WHITE;
             }
-            else if(humanPlayer.equals("White"))
+            else if(humanPlayer.equals(WHITE))
             {
-                humanPlayerColor='w';
-                computerPlayerColor='b';
+                humanPlayerColor=WHITE;
+                computerPlayerColor=BLACK;
             }
         }
 
@@ -59,8 +64,10 @@ public class new_game extends AppCompatActivity {
 
 
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("boardSize",boardSize);
-        intent.putExtra("humanPlayerColor",humanPlayerColor);
+        intent.putExtra("BOARD_SIZE",boardSize.toString());
+        intent.putExtra("HUMAN_PLAYER_COLOR",humanPlayerColor);
+        intent.putExtra("COMPUTER_PLAYER_COLOR",computerPlayerColor);
+        intent.putExtra("FIRST_PLAYER", firstPlayer);
 
         startActivity( intent );
 
@@ -83,17 +90,17 @@ public class new_game extends AppCompatActivity {
     {
         int randomNumber = randomGenerator.nextInt(2);
 
-        firstPlayer = "computer";
+        firstPlayer = COMPUTER_PLAYER;
 
         if(randomNumber>0)
         {
-            computerPlayerColor = 'b';
-            humanPlayerColor = 'w';
+            computerPlayerColor = BLACK;
+            humanPlayerColor = WHITE;
         }
         else
         {
-            computerPlayerColor = 'w';
-            humanPlayerColor = 'b';
+            computerPlayerColor = WHITE;
+            humanPlayerColor = BLACK;
         }
         announcePlayerColor();
     }
@@ -111,7 +118,7 @@ public class new_game extends AppCompatActivity {
     {
         View linearLayout = findViewById(R.id.choosePlayerColor);
         linearLayout.setVisibility(View.VISIBLE);
-        firstPlayer = "human";
+        firstPlayer = HUMAN_PLAYER;
     }
 
     private void announceDiceRoll(int humanDiceRoll, int computerDiceRoll)
