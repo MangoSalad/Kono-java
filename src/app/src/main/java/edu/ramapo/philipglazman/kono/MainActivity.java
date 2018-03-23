@@ -2,12 +2,14 @@ package edu.ramapo.philipglazman.kono;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,15 +24,18 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Stack;
+
 public class MainActivity extends AppCompatActivity {
 
     private final int OPEN_COLOR = Color.WHITE;
     private final int BLACK_COLOR = Color.BLACK;
     private final int WHITE_COLOR = Color.LTGRAY;
+    private final int SELECTED_COLOR = Color.YELLOW;
 
     private Board board;
     private Round round;
-    private ListAdapter boardView;
+    private Human human;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -47,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
         String firstPlayer = getIntent().getStringExtra("FIRST_PLAYER");
 
         round = new Round(firstPlayer, humanPlayerColor,computerPlayerColor);
+
+        human = new Human();
 
         setComputerModeButton();
         createTable();
@@ -149,23 +156,89 @@ public class MainActivity extends AppCompatActivity {
 
     private View.OnClickListener makeMove = new View.OnClickListener() {
 
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
         @Override
         public void onClick(View v) {
 
             if(round.getCurrentTurn().equals("computer"))
             {
                 writeToMessageFeed("Computer must play.");
+                round.setNextTurn();
             }
             else if (round.getCurrentTurn().equals("human"))
             {
                 writeToMessageFeed(round.getCurrentTurn()+" clicked "+v.getTag().toString());
-                int row = v.getTag().toString().charAt(0);
-                int column = v.getTag().toString().charAt(1);
-                //makeHumanMove();
+                int row = Character.getNumericValue(v.getTag().toString().charAt(0));
+                int column = Character.getNumericValue(v.getTag().toString().charAt(1));
+
+                // Identify row and column for debugging.
+                writeToMessageFeed(Integer.toString(row));
+                writeToMessageFeed(Integer.toString(column));
+                writeToMessageFeed(Boolean.toString(board.isValidPieceToMove(round.getHumanPlayerColorAsChar(),row,column)));
+
+                // If an initial piece was selected.
+                if(human.isInitialPieceSelected())
+                {
+                    // Check if the place to move to is valid.
+                    if(board.isValidLocationToMove(row,column,false))
+                    {
+                        if(board.isValidMove(human.getInitialRow(),human.getInitialColumn(),row,column))
+                        {
+                            board.updateBoard(human.getInitialRow(),human.getInitialColumn(),row,column);
+                            //refreshBoard();
+
+                            highlightSelectedPiece(v);
+                            round.setNextTurn();
+                        }
+                    }
+                }
+                // Select an initial piece.
+                else
+                {
+                    // If piece selected is valid.
+                    if(board.isValidPieceToMove(round.getHumanPlayerColorAsChar(),row,column))
+                    {
+                        writeToMessageFeed("Valid piece to move");
+                        highlightSelectedPiece(v);
+                        human.setInitialPosition(row,column);
+                    }
+                }
             }
 
-            round.setNextTurn();
+
         }
 
     };
+
+
+    // Inefficient but is easier from a programmer perspective. Respectful to MVC model and is less error-prone from passing paramaters.
+    public void refreshBoard()
+    {
+        TableLayout table = (TableLayout) findViewById(R.id.boardTable);
+        for(int rowNum = 0; 0 < table.getChildCount(); rowNum++)
+        {
+            TableRow row = (TableRow) table.getChildAt(rowNum);
+
+            for(int columnNum = 0; 0 <row.getChildCount(); columnNum++)
+            {
+                char piece = board.getPieceAtCoordinates(rowNum,columnNum);
+
+//                TextView column = (TextView) row.getChildAt(columnNum);
+//                Drawable gd = column.getBackground();
+//                int colorId = row.getSolidColor();
+//                writeToMessageFeed(Integer.toString(colorId));
+            }
+
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    private void highlightSelectedPiece(View v)
+    {
+        GradientDrawable gd = new GradientDrawable();
+        gd.setColor(SELECTED_COLOR);
+        gd.setCornerRadius(5);
+        gd.setStroke(2, BLACK_COLOR);
+        v.setBackground(gd);
+    }
 }

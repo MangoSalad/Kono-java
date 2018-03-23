@@ -44,4 +44,26 @@ public class Round {
         return humanPlayerColor;
     }
 
+    public char getHumanPlayerColorAsChar()
+    {
+        return colorStringToColorChar(humanPlayerColor);
+    }
+
+    public char getComputerPlayerColorAsChar()
+    {
+        return colorStringToColorChar(computerPlayerColor);
+    }
+
+    private char colorStringToColorChar(String color)
+    {
+        if(color.equals("white"))
+        {
+            return 'W';
+        }
+        else
+        {
+            return 'B';
+        }
+    }
+
 }

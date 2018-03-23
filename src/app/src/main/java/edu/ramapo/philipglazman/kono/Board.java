@@ -79,7 +79,7 @@ public class Board {
 
     private boolean isOutOfBounds(int row, int column)
     {
-        if(row - 1 < 0 || column - 1 < 0 || row - 1 >= board.length || column - 1 >= board.length)
+        if(row < 0 || column < 0 || row >= board.length || column >= board.length)
         {
             return true;
         }
@@ -93,12 +93,13 @@ public class Board {
     {
         if(isOutOfBounds(row,column))
         {
+            Log.d("isvalidPieceToMove","out of bounds");
             return false;
         }
         else
         {
             // Row/Column in board matches the color provided.
-            if( board[row-1][column-1] == color || board[row-1][column-1] == Character.toLowerCase(color))
+            if( board[row][column] == color || board[row][column] == Character.toLowerCase(color))
             {
                 return true;
             }
@@ -123,7 +124,7 @@ public class Board {
             }
             else
             {
-                if(board[row-1][column-1] == '+')
+                if(board[row][column] == '+')
                 {
                     return true;
                 }
@@ -135,6 +136,47 @@ public class Board {
         }
     }
 
+    public boolean isValidMove(int initialRow, int initialColumn, int finalRow, int finalColumn)
+    {
+        if(isOutOfBounds(initialRow,initialColumn) || isOutOfBounds(finalRow,finalColumn))
+        {
+            return false;
+        }
+
+        // Movement is is northwest.
+        if( (initialRow-1) == finalRow && (initialColumn-1) == finalColumn)
+        {
+            return true;
+        }
+        // Movement is northeast.
+        else if( (initialRow-1) == finalRow && (initialColumn+1) == finalColumn)
+        {
+            return true;
+        }
+        // Movement is southwest.
+        else if( (initialRow+1) == finalRow && (initialColumn-1) == finalColumn)
+        {
+            return true;
+        }
+        // Movement is southeast.
+        else if( (initialRow+1) == finalRow && (initialColumn+1) == finalColumn)
+        {
+            return true;
+        }
+        // Movement is invalid.
+        else
+        {
+            return false;
+        }
+    }
+
+    public void updateBoard(int initialRow, int initialColumn, int finalRow, int finalColumn)
+    {
+        //check if ready for upgrade
+        board[finalRow][finalColumn]=board[initialRow][initialRow];
+        board[initialRow][initialRow]='+';
+    }
+
     public boolean isValidOpenLocation(int row, int column)
     {
         if(isOutOfBounds(row,column))
@@ -143,7 +185,7 @@ public class Board {
         }
         else
         {
-            if(board[row-1][column-1] == '+')
+            if(board[row][column] == '+')
             {
                 return true;
             }
