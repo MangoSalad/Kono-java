@@ -53,7 +53,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
     <ScrollView
-        android:id="@+id/gameMessages"
+        android:id="@+id/gameMessagesScrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="400dp"
@@ -63,6 +63,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.6">
 
+        <LinearLayout
+            android:id="@+id/gameMessages"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"></LinearLayout>
     </ScrollView>
 
 </android.support.constraint.ConstraintLayout>
