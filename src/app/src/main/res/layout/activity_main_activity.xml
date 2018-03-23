@@ -4,14 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.ramapo.philipglazman.kono.main_activity">
+    tools:context="edu.ramapo.philipglazman.kono.MainActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/gridView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -38,19 +37,20 @@
             android:text="Quit" />
     </LinearLayout>
 
-    <GridView
-        android:id="@+id/gridView"
+    <TableLayout
+        android:id="@+id/boardTable"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="175dp"
-        android:gravity="center"
-        android:horizontalSpacing="10dp"
-        android:numColumns="5"
-        android:verticalSpacing="10dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        app:layout_constraintTop_toTopOf="parent">
+
+    </TableLayout>
 
     <ScrollView
         android:id="@+id/gameMessagesScrollView"

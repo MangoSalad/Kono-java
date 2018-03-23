@@ -67,6 +67,11 @@ public class Board {
         }
     }
 
+    public int getBoardLength()
+    {
+        return board.length;
+    }
+
     private boolean isOutOfBounds(int row, int column)
     {
         if(row - 1 < 0 || column - 1 < 0 || row - 1 >= board.length || column - 1 >= board.length)
