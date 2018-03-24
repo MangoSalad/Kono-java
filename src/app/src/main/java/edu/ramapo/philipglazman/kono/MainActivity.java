@@ -153,6 +153,47 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Inefficient but is easier from a programmer perspective. Respectful to MVC model and is less error-prone from passing paramaters.
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    public void refreshBoard()
+    {
+        TableLayout table = (TableLayout) findViewById(R.id.boardTable);
+        //int numberOfRows = table.getChildCount();
+
+        for (int rowNum = 0; rowNum < table.getChildCount(); rowNum++)
+        {
+
+            TableRow row = (TableRow) table.getChildAt(rowNum);
+
+            for (int columnNum = 0; columnNum < row.getChildCount(); columnNum++)
+            {
+                TextView column = (TextView) row.getChildAt(columnNum);
+
+                GradientDrawable gd  = new GradientDrawable();
+
+                char piece = board.getPieceAtCoordinates(rowNum,columnNum);
+
+                if(piece == 'w' || piece == 'W')
+                {
+                    gd.setColor(WHITE_COLOR);
+                }
+                else if(piece == 'b' || piece == 'B')
+                {
+                    gd.setColor(BLACK_COLOR);
+                }
+                if(piece == '+')
+                {
+                    gd.setColor(OPEN_COLOR);
+                }
+
+                gd.setCornerRadius(5);
+                gd.setStroke(2, BLACK_COLOR);
+
+                column.setBackground(gd);
+            }
+        }
+    }
+
 
     private View.OnClickListener makeMove = new View.OnClickListener() {
 
@@ -184,12 +225,16 @@ public class MainActivity extends AppCompatActivity {
                     {
                         if(board.isValidMove(human.getInitialRow(),human.getInitialColumn(),row,column))
                         {
+                            writeToMessageFeed("Moving from ("+human.getInitialRow()+","+human.getInitialColumn()+").");
                             board.updateBoard(human.getInitialRow(),human.getInitialColumn(),row,column);
-                            //refreshBoard();
+                            refreshBoard();
 
-                            highlightSelectedPiece(v);
+                            writeToMessageFeed("Valid location to move to.");
                             round.setNextTurn();
+
+                            human.clear();
                         }
+
                     }
                 }
                 // Select an initial piece.
@@ -210,27 +255,6 @@ public class MainActivity extends AppCompatActivity {
 
     };
 
-
-    // Inefficient but is easier from a programmer perspective. Respectful to MVC model and is less error-prone from passing paramaters.
-    public void refreshBoard()
-    {
-        TableLayout table = (TableLayout) findViewById(R.id.boardTable);
-        for(int rowNum = 0; 0 < table.getChildCount(); rowNum++)
-        {
-            TableRow row = (TableRow) table.getChildAt(rowNum);
-
-            for(int columnNum = 0; 0 <row.getChildCount(); columnNum++)
-            {
-                char piece = board.getPieceAtCoordinates(rowNum,columnNum);
-
-//                TextView column = (TextView) row.getChildAt(columnNum);
-//                Drawable gd = column.getBackground();
-//                int colorId = row.getSolidColor();
-//                writeToMessageFeed(Integer.toString(colorId));
-            }
-
-        }
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void highlightSelectedPiece(View v)

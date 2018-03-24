@@ -173,8 +173,9 @@ public class Board {
     public void updateBoard(int initialRow, int initialColumn, int finalRow, int finalColumn)
     {
         //check if ready for upgrade
-        board[finalRow][finalColumn]=board[initialRow][initialRow];
-        board[initialRow][initialRow]='+';
+        board[finalRow][finalColumn]=board[initialRow][initialColumn];
+        board[initialRow][initialColumn]='+';
+        printBoard();
     }
 
     public boolean isValidOpenLocation(int row, int column)
