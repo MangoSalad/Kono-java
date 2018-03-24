@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private Board board;
     private Round round;
     private Human human;
+    private Computer computer;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         round = new Round(firstPlayer, humanPlayerColor,computerPlayerColor);
 
         human = new Human();
+        computer = new Computer(round.getComputerPlayerColor());
 
         setComputerModeButton();
         createTable();
