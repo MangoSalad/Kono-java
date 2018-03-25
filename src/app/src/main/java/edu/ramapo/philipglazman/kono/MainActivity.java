@@ -209,7 +209,10 @@ public class MainActivity extends AppCompatActivity {
                 computer.play(board.getBoard());
                 Pair<Integer,Integer> initialCoordinates = computer.getInitialCoordinates();
                 Pair<Integer,Integer> finalCoordinates = computer.getFinalCoordinates();
+                String direction = computer.getDirection();
+                String strategy = computer.getStrategy();
 
+                writeToMessageFeed("Computer moving ("+initialCoordinates.first+","+initialCoordinates.second+") to ("+ finalCoordinates.first+","+finalCoordinates.second+") "+direction+" "+strategy);
                 board.updateBoard(initialCoordinates.first, initialCoordinates.second, finalCoordinates.first, finalCoordinates.second);
 
                 refreshBoard();

@@ -1,5 +1,6 @@
 package edu.ramapo.philipglazman.kono;
 
+import android.util.Log;
 import android.util.Pair;
 
 import java.util.Random;
@@ -10,6 +11,12 @@ import java.util.Vector;
  */
 
 public class Computer {
+
+    // Available Strategies
+    private final String FORWARD = "forward";
+    private final String RETREAT = "retreat";
+    private final String BLOCK = "block";
+    private final String CAPTURE = "capture";
 
     String playerColor;
     char pieceColor;
@@ -26,7 +33,9 @@ public class Computer {
 
 
     public Computer(String playerColor) {
-        this.playerColor = playerColor;
+        this.playerColor = new String(playerColor);
+
+        Log.d("computer color",playerColor);
 
         if (playerColor.equals("white")) {
             this.pieceColor = 'W';
@@ -52,17 +61,35 @@ public class Computer {
         return coordinates.getDirection();
     }
 
+    public String getStrategy()
+    {
+        return coordinates.getStrategy();
+    }
+
     public void play(char[][] board) {
         // Set available pieces.
-        this.board = board;
+        //this.board = board;
+        this.board = new char[board.length][board.length];
 
-        setAvailablePieces(this.board);
+        for(int i=0; i<board.length; i++)
+        {
+            for(int j=0; j<board[i].length; j++)
+            {
+                this.board[i][j]=board[i][j];
+            }
+        }
+
+        setAvailablePieces();
 
         // Set closest opponent.
-        setClosestOpponent(this.board);
+        setClosestOpponent();
+
+        Log.d("Opponent row",Integer.toString(closestOpponent.first));
+        Log.d("Opponent column",Integer.toString(closestOpponent.second));
 
         // Strategy is following:
         // Check if computer can capture, then check if computer can block east, then check if computer can block west, then check if it must retreat, then play forward.
+
         if (!playCapture()) {
             if (!playBlockEast()) {
                 if (!playBlockWest()) {
@@ -71,8 +98,6 @@ public class Computer {
                     }
                 }
             }
-        } else {
-            // do something with coordinates.
         }
     }
 
@@ -94,25 +119,25 @@ public class Computer {
             if (playerColor.equals("black")) {
                 if (isMoveNorthEast(row, column))
                 {
-                    coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row-1,column+1),"northeast");
+                    coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row-1,column+1),"northeast",FORWARD);
                     break;
                 }
                 else if(isMoveNorthWest(row,column))
                 {
-                    coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row-1,column-1),"northwest");
+                    coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row-1,column-1),"northwest",FORWARD);
                     break;
                 }
 
             } else if (playerColor.equals("white")) {
                 if(isMoveSouthEast(row,column))
                 {
-                    coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row+1,column+1),"southeast");
+                    coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row+1,column+1),"southeast",FORWARD);
                     break;
 
                 }
                 if(isMoveSouthWest(row,column))
                 {
-                    coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row+1,column-1),"southwest");
+                    coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row+1,column-1),"southwest",FORWARD);
                     break;
                 }
             }
@@ -152,7 +177,7 @@ public class Computer {
 
     private boolean isMoveNorthEast(int row, int column)
     {
-        if(isOutOfBounds(row,column))
+        if(isOutOfBounds(row-1,column+1))
         {
             return false;
         }
@@ -169,7 +194,7 @@ public class Computer {
 
     private boolean isMoveNorthWest(int row, int column)
     {
-        if(isOutOfBounds(row,column))
+        if(isOutOfBounds(row-1,column-1))
         {
             return false;
         }
@@ -186,7 +211,7 @@ public class Computer {
 
     private boolean isMoveSouthEast(int row, int column)
     {
-        if(isOutOfBounds(row,column))
+        if(isOutOfBounds(row+1,column+1))
         {
             return false;
         }
@@ -203,7 +228,7 @@ public class Computer {
 
     private boolean isMoveSouthWest(int row, int column)
     {
-        if(isOutOfBounds(row,column))
+        if(isOutOfBounds(row+1,column-1))
         {
             return false;
         }
@@ -226,37 +251,37 @@ public class Computer {
 
         if(playerColor.equals("black"))
         {
-            if(isFriendlyEast(row,column))
+            if(isFriendlyEast(row,column) && isOpenLocation(row+1,column+1))
             {
-                coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row+1,column+1),"southeast");
+                coordinates = new TupleCoordinates(Pair.create(row,column+2),Pair.create(row+1,column+1),"southeast",BLOCK);
                 return true;
             }
-            else if (isFriendlySouthEast(row,column))
+            else if (isFriendlySouthEast(row,column) && isOpenLocation(row+1,column+1))
             {
-                coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row+1,column+1),"northwest");
+                coordinates = new TupleCoordinates(Pair.create(row+2,column+2),Pair.create(row+1,column+1),"northwest",BLOCK);
                 return true;
             }
-            else if(isFriendlySouth(row,column))
+            else if(isFriendlySouth(row,column) && isOpenLocation(row+1,column+1))
             {
-                coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row+1,column+1),"northeast");
+                coordinates = new TupleCoordinates(Pair.create(row+2,column),Pair.create(row+1,column+1),"northeast",BLOCK);
                 return true;
             }
         }
         else if(playerColor.equals("white"))
         {
-            if(isFriendlyEast(row,column))
+            if(isFriendlyEast(row,column) && isOpenLocation(row-1,column+1))
             {
-                coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row-1,column+1),"northwest");
+                coordinates = new TupleCoordinates(Pair.create(row,column+2),Pair.create(row-1,column+1),"northwest",BLOCK);
                 return true;
             }
-            else if (isFriendlyNorthEast(row,column))
+            else if (isFriendlyNorthEast(row,column) && isOpenLocation(row-1,column+1))
             {
-                coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row-1,column+1),"southwest");
+                coordinates = new TupleCoordinates(Pair.create(row-2,column+2),Pair.create(row-1,column+1),"southwest",BLOCK);
                 return true;
             }
-            else if(isFriendlyNorth(row,column))
+            else if(isFriendlyNorth(row,column) && isOpenLocation(row-1,column+1))
             {
-                coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row-1,column+1),"southeast");
+                coordinates = new TupleCoordinates(Pair.create(row-2,column),Pair.create(row-1,column+1),"southeast",BLOCK);
                 return true;
             }
         }
@@ -268,48 +293,67 @@ public class Computer {
         int row = closestOpponent.first;
         int column = closestOpponent.second;
 
+        if(isOpenLocation(row+1,column+1))
+
         if(playerColor.equals("black"))
         {
-            if(isFriendlyWest(row,column))
+            if(isFriendlyWest(row,column) && isOpenLocation(row+1,column-1))
             {
-                coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row+1,column-1),"southeast");
+                coordinates = new TupleCoordinates(Pair.create(row,column-2),Pair.create(row+1,column-1),"southeast",BLOCK);
                 return true;
             }
-            else if (isFriendlySouthWest(row,column))
+            else if (isFriendlySouthWest(row,column) && isOpenLocation(row+1,column-1))
             {
-                coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row+1,column-1),"northeast");
+                coordinates = new TupleCoordinates(Pair.create(row+2,column-2),Pair.create(row+1,column-1),"northeast",BLOCK);
                 return true;
             }
-            else if(isFriendlySouth(row,column))
+            else if(isFriendlySouth(row,column) && isOpenLocation(row+1,column-1))
             {
-                coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row+1,column-1),"northwest");
+                coordinates = new TupleCoordinates(Pair.create(row+2,column),Pair.create(row+1,column-1),"northwest",BLOCK);
                 return true;
             }
         }
         else if(playerColor.equals("white"))
         {
-            if(isFriendlyWest(row,column))
+            if(isFriendlyWest(row,column) && isOpenLocation(row-1,column-1))
             {
-                coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row-1,column-1),"northeast");
+                coordinates = new TupleCoordinates(Pair.create(row,column-2),Pair.create(row-1,column-1),"northeast",BLOCK);
                 return true;
             }
-            else if (isFriendlyNorthWest(row,column))
+            else if (isFriendlyNorthWest(row,column) && isOpenLocation(row-1,column-1))
             {
-                coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row-1,column-1),"southeast");
+                coordinates = new TupleCoordinates(Pair.create(row-2,column-2),Pair.create(row-1,column-1),"southeast",BLOCK);
                 return true;
             }
-            else if(isFriendlyNorth(row,column))
+            else if(isFriendlyNorth(row,column) && isOpenLocation(row-1,column-1))
             {
-                coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row-1,column-1),"southwest");
+                coordinates = new TupleCoordinates(Pair.create(row-2,column),Pair.create(row-1,column-1),"southwest",BLOCK);
                 return true;
             }
         }
         return false;
     }
 
-    private boolean isFriendlySouth(int row, int column)
+    private boolean isOpenLocation(int row, int column)
     {
         if(isOutOfBounds(row,column))
+        {
+            return false;
+        }
+
+        if (board[row][column] == '+')
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private boolean isFriendlySouth(int row, int column)
+    {
+        if(isOutOfBounds(row+2,column))
         {
             return false;
         }
@@ -326,7 +370,7 @@ public class Computer {
 
     private boolean isFriendlyNorth(int row, int column)
     {
-        if(isOutOfBounds(row,column))
+        if(isOutOfBounds(row-2,column))
         {
             return false;
         }
@@ -344,7 +388,7 @@ public class Computer {
 
     private boolean isFriendlySouthEast(int row ,int column)
     {
-        if(isOutOfBounds(row,column))
+        if(isOutOfBounds(row+2,column+2))
         {
             return false;
         }
@@ -361,7 +405,7 @@ public class Computer {
 
     private boolean isFriendlySouthWest(int row, int column)
     {
-        if(isOutOfBounds(row,column))
+        if(isOutOfBounds(row+2,column=2))
         {
             return false;
         }
@@ -378,7 +422,7 @@ public class Computer {
 
     private boolean isFriendlyNorthWest(int row, int column)
     {
-        if(isOutOfBounds(row,column))
+        if(isOutOfBounds(row-2,column-2))
         {
             return false;
         }
@@ -395,7 +439,7 @@ public class Computer {
 
     private boolean isFriendlyNorthEast(int row, int column)
     {
-        if(isOutOfBounds(row,column))
+        if(isOutOfBounds(row-2,column+2))
         {
             return false;
         }
@@ -413,7 +457,7 @@ public class Computer {
 
     private boolean isFriendlyWest(int row, int column)
     {
-        if(isOutOfBounds(row,column))
+        if(isOutOfBounds(row,column-2))
         {
             return false;
         }
@@ -431,7 +475,7 @@ public class Computer {
 
     private boolean isFriendlyEast(int row, int column)
     {
-        if(isOutOfBounds(row,column))
+        if(isOutOfBounds(row,column+2))
         {
             return false;
         }
@@ -456,22 +500,22 @@ public class Computer {
 
             if(isOpponentNorthEast(row,column))
             {
-                coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row-1,column+1),"northeast");
+                coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row-1,column+1),"northeast",CAPTURE);
                 return true;
             }
             else if (isOpponentNorthWest(row,column))
             {
-                coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row-1,column-1),"northwest");
+                coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row-1,column-1),"northwest",CAPTURE);
                 return true;
             }
             else if(isOpponentSouthEast(row,column))
             {
-                coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row+1,column+1),"southeast");
+                coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row+1,column+1),"southeast",CAPTURE);
                 return true;
             }
             else if(isOpponentSouthWest(row,column))
             {
-                coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row+1,column-1),"southwest");
+                coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row+1,column-1),"southwest",CAPTURE);
                 return true;
             }
 
@@ -480,19 +524,10 @@ public class Computer {
         return false;
     }
 
-    private void setInitialCoordinates()
-    {
-
-    }
-
-    private void setFinalCoordinates()
-    {
-
-    }
 
     private boolean isOpponentSouthWest(int row, int column)
     {
-        if(isOutOfBounds(row,column))
+        if(isOutOfBounds(row+1,column-1))
         {
             return false;
         }
@@ -510,7 +545,7 @@ public class Computer {
 
     private boolean isOpponentSouthEast(int row, int column)
     {
-        if(isOutOfBounds(row,column))
+        if(isOutOfBounds(row+1,column-1))
         {
             return false;
         }
@@ -527,7 +562,7 @@ public class Computer {
 
     private boolean isOpponentNorthWest(int row, int column)
     {
-        if(isOutOfBounds(row,column))
+        if(isOutOfBounds(row-1,column-1))
         {
             return false;
         }
@@ -544,7 +579,7 @@ public class Computer {
 
     private boolean isOpponentNorthEast(int row, int column)
     {
-        if(isOutOfBounds(row,column))
+        if(isOutOfBounds(row-1,column+1))
         {
             return false;
         }
@@ -571,7 +606,8 @@ public class Computer {
         }
     }
 
-    private void setAvailablePieces(char[][] board)
+
+    private void setAvailablePieces()
     {
         availablePieces = new Vector<Pair<Integer,Integer>> ();
         availableSuperPieces = new Vector<Pair<Integer,Integer>> ();
@@ -594,7 +630,7 @@ public class Computer {
         }
     }
 
-    private void setClosestOpponent(char[][] board)
+    private void setClosestOpponent()
     {
         if(playerColor.equals("white"))
         {
@@ -604,7 +640,7 @@ public class Computer {
                 {
                     if(board[i][j]==opponentPieceColor || board[i][j] == Character.toLowerCase(opponentPieceColor))
                     {
-                        closestOpponent = Pair.create(i,j);
+                        closestOpponent = new Pair<Integer,Integer> (i,j);
                         break;
                     }
                 }
@@ -618,7 +654,7 @@ public class Computer {
                 {
                     if(board[i][j]==opponentPieceColor || board[i][j] == Character.toLowerCase(opponentPieceColor))
                     {
-                        closestOpponent = Pair.create(i,j);
+                        closestOpponent = new Pair<Integer,Integer> (i,j);
                         break;
                     }
                 }

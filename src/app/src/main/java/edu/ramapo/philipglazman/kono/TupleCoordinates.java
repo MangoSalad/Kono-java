@@ -11,12 +11,14 @@ public class TupleCoordinates {
     private Pair<Integer, Integer> initialCoordinates;
     private Pair<Integer, Integer> finalCoordinates;
     private String direction;
+    private String strategy;
 
-    public TupleCoordinates(Pair<Integer,Integer> initialCoordiantes, Pair<Integer, Integer> finalCoordiantes, String direction)
+    public TupleCoordinates(Pair<Integer,Integer> initialCoordiantes, Pair<Integer, Integer> finalCoordinates, String direction, String strategy)
     {
         this.initialCoordinates=initialCoordiantes;
-        this.finalCoordinates=finalCoordiantes;
+        this.finalCoordinates=finalCoordinates;
         this.direction=direction;
+        this.strategy=strategy;
     }
 
     public Pair<Integer,Integer> getInitialCoordinates()
@@ -32,6 +34,11 @@ public class TupleCoordinates {
     public String getDirection()
     {
         return direction;
+    }
+
+    public String getStrategy()
+    {
+        return strategy;
     }
 
 }
