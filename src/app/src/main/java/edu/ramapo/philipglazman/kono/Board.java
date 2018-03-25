@@ -21,6 +21,11 @@ public class Board {
         printBoard();
     }
 
+    public char[][] getBoard()
+    {
+        return board;
+    }
+
     /**
      * Generates home pieces on a new board.
      */

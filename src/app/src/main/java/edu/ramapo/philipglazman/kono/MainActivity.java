@@ -206,6 +206,14 @@ public class MainActivity extends AppCompatActivity {
             if(round.getCurrentTurn().equals("computer"))
             {
                 writeToMessageFeed("Computer must play.");
+                computer.play(board.getBoard());
+                Pair<Integer,Integer> initialCoordinates = computer.getInitialCoordinates();
+                Pair<Integer,Integer> finalCoordinates = computer.getFinalCoordinates();
+
+                board.updateBoard(initialCoordinates.first, initialCoordinates.second, finalCoordinates.first, finalCoordinates.second);
+
+                refreshBoard();
+
                 round.setNextTurn();
             }
             else if (round.getCurrentTurn().equals("human"))
