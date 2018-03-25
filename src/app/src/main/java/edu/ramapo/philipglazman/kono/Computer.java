@@ -38,11 +38,11 @@ public class Computer {
         Log.d("computer color",playerColor);
 
         if (playerColor.equals("white")) {
-            this.pieceColor = 'W';
-            this.opponentPieceColor = 'B';
+            this.pieceColor = new Character('W');
+            this.opponentPieceColor = new Character('B');
         } else if (playerColor.equals("black")) {
-            this.pieceColor = 'B';
-            this.opponentPieceColor = 'W';
+            this.pieceColor = new Character('B');
+            this.opponentPieceColor = new Character('W');
         }
     }
 
@@ -67,8 +67,12 @@ public class Computer {
     }
 
     public void play(char[][] board) {
+        this.board=null;
+        this.availablePieces=null;
+        this.closestOpponent=null;
+        this.availableSuperPieces=null;
+
         // Set available pieces.
-        //this.board = board;
         this.board = new char[board.length][board.length];
 
         for(int i=0; i<board.length; i++)
@@ -115,6 +119,8 @@ public class Computer {
 
             int row = randomPiece.first;
             int column = randomPiece.second;
+            Log.d("Piece to move row", Integer.toString(row));
+            Log.d("Piece to move column", Integer.toString(column));
 
             if (playerColor.equals("black")) {
                 if (isMoveNorthEast(row, column))
@@ -168,6 +174,36 @@ public class Computer {
                 if(isMoveSouthWest(row,column))
                 {
                     return false;
+                }
+            }
+        }
+
+        for(int i = 0; i < availablePieces.size(); i++) {
+            int row = availablePieces.elementAt(i).first;
+            int column = availablePieces.elementAt(i).second;
+
+            if (playerColor.equals("black")) {
+                if (isMoveSouthEast(row, column))
+                {
+                    coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row+1,column-1),"southwest",RETREAT);
+                    return true;
+                }
+                else if(isMoveSouthWest(row,column))
+                {
+                    coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row+1,column+1),"southeast",RETREAT);
+                    return true;
+                }
+
+            } else if (playerColor.equals("white")) {
+                if(isMoveNorthEast(row,column))
+                {
+                    coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row-1,column+1),"northeast",RETREAT);
+                    return true;
+                }
+                if(isMoveNorthWest(row,column))
+                {
+                    coordinates = new TupleCoordinates(Pair.create(row,column),Pair.create(row-1,column-1),"northwest",RETREAT);
+                    return true;
                 }
             }
         }
@@ -292,8 +328,6 @@ public class Computer {
     {
         int row = closestOpponent.first;
         int column = closestOpponent.second;
-
-        if(isOpenLocation(row+1,column+1))
 
         if(playerColor.equals("black"))
         {
@@ -545,7 +579,7 @@ public class Computer {
 
     private boolean isOpponentSouthEast(int row, int column)
     {
-        if(isOutOfBounds(row+1,column-1))
+        if(isOutOfBounds(row+1,column+1))
         {
             return false;
         }
@@ -630,7 +664,7 @@ public class Computer {
         }
     }
 
-    private void setClosestOpponent()
+    private int setClosestOpponent()
     {
         if(playerColor.equals("white"))
         {
@@ -640,8 +674,9 @@ public class Computer {
                 {
                     if(board[i][j]==opponentPieceColor || board[i][j] == Character.toLowerCase(opponentPieceColor))
                     {
+                        Log.d("opponent",Integer.toString(i)+Integer.toString(j));
                         closestOpponent = new Pair<Integer,Integer> (i,j);
-                        break;
+                        return 0;
                     }
                 }
             }
@@ -654,11 +689,13 @@ public class Computer {
                 {
                     if(board[i][j]==opponentPieceColor || board[i][j] == Character.toLowerCase(opponentPieceColor))
                     {
+                        Log.d("opponent",Integer.toString(i)+Integer.toString(j));
                         closestOpponent = new Pair<Integer,Integer> (i,j);
-                        break;
+                        return 0;
                     }
                 }
             }
         }
+        return 1;
     }
 }

@@ -177,10 +177,46 @@ public class Board {
 
     public void updateBoard(int initialRow, int initialColumn, int finalRow, int finalColumn)
     {
-        //check if ready for upgrade
-        board[finalRow][finalColumn]=board[initialRow][initialColumn];
+        if(isReadyToUpgrade(initialRow,initialColumn, finalRow))
+        {
+            board[finalRow][finalColumn]=Character.toLowerCase(board[initialRow][initialColumn]);
+        }
+        else
+        {
+            board[finalRow][finalColumn]=board[initialRow][initialColumn];
+        }
         board[initialRow][initialColumn]='+';
         printBoard();
+    }
+
+    private boolean isReadyToUpgrade(int initialRow, int initialColumn, int finalRow)
+    {
+        if(board[initialRow][initialColumn]=='W')
+        {
+            if(finalRow==board.length-1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else if(board[initialRow][initialColumn]=='B')
+        {
+            if(finalRow==0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public boolean isValidOpenLocation(int row, int column)
@@ -199,6 +235,18 @@ public class Board {
             {
                 return false;
             }
+        }
+    }
+
+    public boolean isSuperPiece(int row, int column)
+    {
+        if(board[row][column] == 'w' || board[row][column] == 'b')
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 

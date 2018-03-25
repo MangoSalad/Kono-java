@@ -120,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
                 columns.setWidth(100);
                 columns.setHeight(100);
                 columns.setTextSize(20);
-                //columns.setText("B");
 
                 GradientDrawable gd = new GradientDrawable();
 
@@ -129,14 +128,25 @@ public class MainActivity extends AppCompatActivity {
                 if(piece == 'w' || piece == 'W')
                 {
                     gd.setColor(WHITE_COLOR);
+                    if(piece=='w')
+                    {
+                        columns.setText("S");
+                        columns.setTextColor(BLACK_COLOR);
+                    }
                 }
                 else if(piece == 'b' || piece == 'B')
                 {
                     gd.setColor(BLACK_COLOR);
+                    if(piece=='b')
+                    {
+                        columns.setText("S");
+                        columns.setTextColor(WHITE_COLOR);
+                    }
                 }
                 if(piece == '+')
                 {
                     gd.setColor(OPEN_COLOR);
+                    columns.setText("");
                 }
 
 
@@ -178,14 +188,33 @@ public class MainActivity extends AppCompatActivity {
                 if(piece == 'w' || piece == 'W')
                 {
                     gd.setColor(WHITE_COLOR);
+                    if(piece=='w')
+                    {
+                        column.setText("S");
+                        column.setTextColor(BLACK_COLOR);
+                    }
+                    else
+                    {
+                        column.setText("");
+                    }
                 }
                 else if(piece == 'b' || piece == 'B')
                 {
                     gd.setColor(BLACK_COLOR);
+                    if(piece=='b')
+                    {
+                        column.setText("S");
+                        column.setTextColor(WHITE_COLOR);
+                    }
+                    else
+                    {
+                        column.setText("");
+                    }
                 }
                 if(piece == '+')
                 {
                     gd.setColor(OPEN_COLOR);
+                    column.setText("");
                 }
 
                 gd.setCornerRadius(5);
@@ -196,30 +225,41 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    public void computerMode(View v)
+    {
+        if(round.getCurrentTurn().equals("computer"))
+        {
+            writeToMessageFeed("Computer must play.");
+            computer.play(board.getBoard());
+            Pair<Integer,Integer> initialCoordinates = computer.getInitialCoordinates();
+            Pair<Integer,Integer> finalCoordinates = computer.getFinalCoordinates();
+            String direction = computer.getDirection();
+            String strategy = computer.getStrategy();
+
+            writeToMessageFeed("Computer moving ("+initialCoordinates.first+","+initialCoordinates.second+") to ("+ finalCoordinates.first+","+finalCoordinates.second+") "+direction+" "+strategy);
+            board.updateBoard(initialCoordinates.first, initialCoordinates.second, finalCoordinates.first, finalCoordinates.second);
+
+            refreshBoard();
+
+            round.setNextTurn();
+            setComputerModeButton();
+        }
+        else
+        {
+            writeToMessageFeed("Help mode");
+            setComputerModeButton();
+        }
+
+    }
+
 
     private View.OnClickListener makeMove = new View.OnClickListener() {
 
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
         @Override
         public void onClick(View v) {
-
-            if(round.getCurrentTurn().equals("computer"))
-            {
-                writeToMessageFeed("Computer must play.");
-                computer.play(board.getBoard());
-                Pair<Integer,Integer> initialCoordinates = computer.getInitialCoordinates();
-                Pair<Integer,Integer> finalCoordinates = computer.getFinalCoordinates();
-                String direction = computer.getDirection();
-                String strategy = computer.getStrategy();
-
-                writeToMessageFeed("Computer moving ("+initialCoordinates.first+","+initialCoordinates.second+") to ("+ finalCoordinates.first+","+finalCoordinates.second+") "+direction+" "+strategy);
-                board.updateBoard(initialCoordinates.first, initialCoordinates.second, finalCoordinates.first, finalCoordinates.second);
-
-                refreshBoard();
-
-                round.setNextTurn();
-            }
-            else if (round.getCurrentTurn().equals("human"))
+            if (round.getCurrentTurn().equals("human"))
             {
                 writeToMessageFeed(round.getCurrentTurn()+" clicked "+v.getTag().toString());
                 int row = Character.getNumericValue(v.getTag().toString().charAt(0));
@@ -233,8 +273,13 @@ public class MainActivity extends AppCompatActivity {
                 // If an initial piece was selected.
                 if(human.isInitialPieceSelected())
                 {
+                    if(human.getInitialRow()==row && human.getInitialColumn()==column)
+                    {
+                        human.clear();
+                        refreshBoard();
+                    }
                     // Check if the place to move to is valid.
-                    if(board.isValidLocationToMove(row,column,false))
+                    else if(board.isValidLocationToMove(row,column,board.isSuperPiece(human.getInitialRow(),human.getInitialColumn())))
                     {
                         if(board.isValidMove(human.getInitialRow(),human.getInitialColumn(),row,column))
                         {
@@ -246,6 +291,7 @@ public class MainActivity extends AppCompatActivity {
                             round.setNextTurn();
 
                             human.clear();
+                            setComputerModeButton();
                         }
 
                     }

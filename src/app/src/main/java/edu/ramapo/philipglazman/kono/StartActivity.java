@@ -23,14 +23,14 @@ public class StartActivity extends AppCompatActivity {
 //        linearLayout.addView(textView);
 
         Intent intent = new Intent(this, NewGameActivity.class);
-        intent.putExtra("startType", "new");
+        intent.putExtra("START_TYPE","new");
         startActivity( intent );
     }
 
     public void startLoadGame(View view)
     {
         Intent intent = new Intent(this, NewGameActivity.class);
-        intent.putExtra("startType", "load");
+        intent.putExtra("START_TYPE","load");
         startActivity( intent );
     }
 }

@@ -18,17 +18,32 @@ public class NewGameActivity extends AppCompatActivity {
     private final String COMPUTER_PLAYER = "computer";
     private final String HUMAN_PLAYER = "human";
 
-    private Random randomGenerator =  new Random();
+
     private String humanPlayerColor = "";
     private String computerPlayerColor = "";
     private String firstPlayer = "";
+
+    private Random randomGenerator =  new Random();
+
+    private GameConfiguration config;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_game);
 
-        choosePlayers();
+        String startType = getIntent().getStringExtra("START_TYPE");
+        config = new GameConfiguration(startType);
+
+        // TODO serialization
+        if(startType.equals("load"))
+        {
+
+        }
+        else
+        {
+            choosePlayers();
+        }
     }
 
     /**
@@ -73,38 +88,6 @@ public class NewGameActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * Simulates random dice throw by randomly generating number between 1 and 12.
-     * @return Integer between 1 and 12.
-     */
-    private int randomDiceNumber()
-    {
-        int randomNumber = randomGenerator.nextInt(12)+1;
-        return randomNumber;
-    }
-
-    /**
-     * Randomly choose a player color for computer and human players.
-     */
-    private void randomPlayerColor()
-    {
-        int randomNumber = randomGenerator.nextInt(2);
-
-        firstPlayer = COMPUTER_PLAYER;
-
-        if(randomNumber>0)
-        {
-            computerPlayerColor = BLACK;
-            humanPlayerColor = WHITE;
-        }
-        else
-        {
-            computerPlayerColor = WHITE;
-            humanPlayerColor = BLACK;
-        }
-        announcePlayerColor();
-    }
-
     private void announcePlayerColor()
     {
         LinearLayout linearLayout = (LinearLayout)findViewById(R.id.diceRolls);
@@ -133,10 +116,10 @@ public class NewGameActivity extends AppCompatActivity {
     /**
      * Set colors for players.
      */
-    private void choosePlayers()
+    public void choosePlayers()
     {
-        int humanDiceRoll = randomDiceNumber();
-        int computerDiceRoll = randomDiceNumber();
+        int humanDiceRoll = config.randomDiceNumber();
+        int computerDiceRoll = config.randomDiceNumber();
 
 
         announceDiceRoll(humanDiceRoll,computerDiceRoll);
@@ -158,8 +141,30 @@ public class NewGameActivity extends AppCompatActivity {
         {
             choosePlayers();
         }
-
     }
+
+    /**
+     * Randomly choose a player color for computer and human players.
+     */
+    private void randomPlayerColor()
+    {
+        int randomNumber = randomGenerator.nextInt(2);
+
+        firstPlayer = COMPUTER_PLAYER;
+
+        if(randomNumber>0)
+        {
+            computerPlayerColor = BLACK;
+            humanPlayerColor = WHITE;
+        }
+        else
+        {
+            computerPlayerColor = WHITE;
+            humanPlayerColor = BLACK;
+        }
+        announcePlayerColor();
+    }
+
 
 
 
