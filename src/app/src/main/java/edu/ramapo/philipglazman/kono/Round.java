@@ -41,6 +41,22 @@ public class Round {
         }
     }
 
+    public String getWinner()
+    {
+        if(computerScore > humanScore)
+        {
+            return "computer";
+        }
+        else if(humanScore > computerScore)
+        {
+            return "human";
+        }
+        else
+        {
+            return "draw";
+        }
+    }
+
     public int getHumanScore()
     {
         return humanScore;

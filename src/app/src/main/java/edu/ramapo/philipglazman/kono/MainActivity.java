@@ -419,8 +419,10 @@ public class MainActivity extends AppCompatActivity {
     public void quitGame(View v)
     {
         tournament.subtractHumanScore(5);
+        this.showResults();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void saveGame(View v)
     {
         config = new GameConfiguration(tournament.getRoundNum(),tournament.getComputerScore(),
@@ -429,5 +431,21 @@ public class MainActivity extends AppCompatActivity {
 
         String fileName = "case2.txt";
         config.saveGame(fileName);
+    }
+
+    public void showResults()
+    {
+        Intent intent = new Intent(this, EndActivity.class);
+
+        // Put Extras for Round Scores
+        intent.putExtra("ROUND_WINNER",round.getWinner());
+        intent.putExtra("ROUND_COMPUTER_SCORE",Integer.toString(round.getComputerScore()));
+        intent.putExtra("ROUND_HUMAN_SCORE",Integer.toString(round.getHumanScore()));
+
+        // Put Extras for Tournament Scores
+        intent.putExtra("TOURNAMENT_COMPUTER_SCORE",Integer.toString(tournament.getComputerScore()));
+        intent.putExtra("TOURNAMENT_HUMAN_SCORE",Integer.toString(tournament.getHumanScore()));
+
+        startActivity(intent);
     }
 }

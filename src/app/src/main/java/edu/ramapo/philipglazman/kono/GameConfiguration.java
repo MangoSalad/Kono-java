@@ -1,7 +1,9 @@
 package edu.ramapo.philipglazman.kono;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Environment;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -89,6 +91,7 @@ public class GameConfiguration {
         return nextPlayer.toLowerCase();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void saveGame(String fileName)
     {
         File filePath = Environment.getExternalStorageDirectory();
@@ -105,45 +108,73 @@ public class GameConfiguration {
             e.printStackTrace();
         }
             Log.d("FILE", "File exists.");
-            try {
-                BufferedWriter bw = new BufferedWriter(new FileWriter(file,false));
 
-                bw.write("Round: "+Integer.toString(roundNum));
+        try {
+            FileWriter fw = new FileWriter(file, false);
+            BufferedWriter bw = new BufferedWriter(fw);
+            try {
+                //FileWriter fw = new FileWriter(file,false);
+                //BufferedWriter bw = new BufferedWriter(new FileWriter(file,false));
+
+                bw.write("Round: " + Integer.toString(roundNum));
                 bw.newLine();
 
                 bw.write("Computer: ");
                 bw.newLine();
-                bw.write("  Score: "+Integer.toString(computerScore));
+                bw.write("   Score: " + Integer.toString(computerScore));
                 bw.newLine();
-                bw.write("  Color: "+computerColor);
+                bw.write("   Color: " + computerColor.substring(0, 1).toUpperCase() + computerColor.substring(1));
                 bw.newLine();
 
                 bw.write("Human: ");
                 bw.newLine();
-                bw.write("  Score: "+Integer.toString(humanScore));
+                bw.write("   Score: " + Integer.toString(humanScore));
                 bw.newLine();
-                bw.write("  Color: "+humanColor);
+                bw.write("   Color: " + humanColor.substring(0, 1).toUpperCase() + humanColor.substring(1));
                 bw.newLine();
 
                 bw.write("Board: ");
                 bw.newLine();
-                for(int i = 0; i <board.length; i++)
-                {
-                    bw.write(board[i]);
+
+                for (int i = 0; i < board.length; i++) {
+                    for (int j = 0; j < board.length; j++) {
+
+                        Log.d("FILE", Character.toString(board[i][j]));
+                        bw.write("   ");
+
+                        if (board[i][j] == '+') {
+                            bw.write("O");
+                        } else if (board[i][j] == 'w') {
+                            bw.write("WW");
+                        } else if (board[i][j] == 'b') {
+                            bw.write("BB");
+                        } else if (board[i][j] == 'B') {
+                            bw.write("B");
+                        } else if (board[i][j] == 'W') {
+                            bw.write("W");
+                        }
+                    }
+
                     bw.newLine();
                 }
 
-                bw.write("Next Player: "+nextPlayer);
+                bw.newLine();
+                bw.write("Next Player: " + nextPlayer.substring(0, 1).toUpperCase() + nextPlayer.substring(1));
 
-                bw.close();
+                //bw.close();
+                //fw.close();
                 Log.d("FILE", "file written");
 
 
             } catch (IOException e) {
-                Log.d("FILE", "file not written");
                 e.printStackTrace();
+            } finally {
+                bw.close();
+                fw.close();
             }
-
+        } catch (IOException e) {
+        e.printStackTrace();
+        }
     }
 
     // Load file
