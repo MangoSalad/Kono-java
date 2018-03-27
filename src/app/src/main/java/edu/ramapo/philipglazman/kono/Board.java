@@ -21,6 +21,20 @@ public class Board {
         printBoard();
     }
 
+    public Board(char[][] board)
+    {
+        this.board = new char[board.length][board.length];
+
+        for(int i=0;i<board.length;i++)
+        {
+            for(int j=0;j<board.length;j++)
+            {
+                Log.d("IN BOARD",Character.toString(board[i][j]));
+                this.board[i][j]=board[i][j];
+            }
+        }
+    }
+
     public char[][] getBoard()
     {
         return board;

@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private Round round;
     private Human human;
     private Computer computer;
+    private Computer help;
+    private Tournament tournament;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -45,17 +47,48 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_activity);
 
 
-        String boardSize = getIntent().getStringExtra("BOARD_SIZE");
-        board = new Board(Integer.parseInt(boardSize));
+        // Prepare board.
+        // If pre-existing board exists from load game.
+        if(getIntent().hasExtra("BOARD"))
+        {
+            char[][] loadedBoard = (char[][]) getIntent().getSerializableExtra("BOARD");
+            for(int i=0; i<loadedBoard.length;i++)
+            {
+                for(int j=0; j<loadedBoard.length;j++)
+                {
+                    Log.d("MAIN",Character.toString(loadedBoard[i][j]));
+                }
+            }
+            board = new Board(loadedBoard);
+        }
+        else
+        {
+            String boardSize = getIntent().getStringExtra("BOARD_SIZE");
+            board = new Board(Integer.parseInt(boardSize));
+        }
 
-        String humanPlayerColor = getIntent().getStringExtra("HUMAN_PLAYER_COLOR");
-        String computerPlayerColor = getIntent().getStringExtra("COMPUTER_PLAYER_COLOR");
+
+        String humanPlayerColor = getIntent().getStringExtra("HUMAN_COLOR");
+        String computerPlayerColor = getIntent().getStringExtra("COMPUTER_COLOR");
         String firstPlayer = getIntent().getStringExtra("FIRST_PLAYER");
 
         round = new Round(firstPlayer, humanPlayerColor,computerPlayerColor);
 
         human = new Human();
         computer = new Computer(round.getComputerPlayerColor());
+        help = new Computer(round.getHumanPlayerColor());
+
+        if(getIntent().hasExtra("ROUND_NUM"))
+        {
+            int roundNum = Integer.parseInt(getIntent().getStringExtra("ROUND_NUM"));
+            int computerScore = Integer.parseInt(getIntent().getStringExtra("COMPUTER_SCORE"));
+            int humanScore = Integer.parseInt(getIntent().getStringExtra("HUMAN_SCORE"));
+            tournament = new Tournament(roundNum, computerScore,humanScore);
+        }
+        else
+        {
+            tournament = new Tournament();
+        }
 
         setComputerModeButton();
         createTable();
@@ -67,11 +100,13 @@ public class MainActivity extends AppCompatActivity {
     {
         if(round.getCurrentTurn().equals("computer"))
         {
+            writeToMessageFeed("It is computer's turn.");
             Button button = (Button)findViewById(R.id.computerMode);
             button.setText("Play");
         }
         else if(round.getCurrentTurn().equals("human"))
         {
+            writeToMessageFeed("It is human's turn.");
             Button button = (Button)findViewById(R.id.computerMode);
             button.setText("Help Mode");
         }
@@ -230,14 +265,14 @@ public class MainActivity extends AppCompatActivity {
     {
         if(round.getCurrentTurn().equals("computer"))
         {
-            writeToMessageFeed("Computer must play.");
             computer.play(board.getBoard());
             Pair<Integer,Integer> initialCoordinates = computer.getInitialCoordinates();
             Pair<Integer,Integer> finalCoordinates = computer.getFinalCoordinates();
             String direction = computer.getDirection();
             String strategy = computer.getStrategy();
 
-            writeToMessageFeed("Computer moving ("+initialCoordinates.first+","+initialCoordinates.second+") to ("+ finalCoordinates.first+","+finalCoordinates.second+") "+direction+" "+strategy);
+            displayComputerStrategy(initialCoordinates.first,initialCoordinates.second,finalCoordinates.first,finalCoordinates.second,direction,strategy);
+
             board.updateBoard(initialCoordinates.first, initialCoordinates.second, finalCoordinates.first, finalCoordinates.second);
 
             refreshBoard();
@@ -245,12 +280,65 @@ public class MainActivity extends AppCompatActivity {
             round.setNextTurn();
             setComputerModeButton();
         }
-        else
+        else if(round.getCurrentTurn().equals("human"))
         {
-            writeToMessageFeed("Help mode");
-            setComputerModeButton();
+            help.play(board.getBoard());
+            Pair<Integer,Integer> initialCoordinates = help.getInitialCoordinates();
+            Pair<Integer,Integer> finalCoordinates = help.getFinalCoordinates();
+            String direction = help.getDirection();
+            String strategy = help.getStrategy();
+
+            displayHelpStrategy(initialCoordinates.first,initialCoordinates.second,finalCoordinates.first,finalCoordinates.second,direction,strategy);
         }
 
+    }
+
+    private void displayHelpStrategy(int initialRow, int initialColumn, int finalRow, int finalColumn, String direction, String strategy)
+    {
+        if(strategy.equals("forward"))
+        {
+            writeToMessageFeed("It is recommend to move the piece at ("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".");
+            writeToMessageFeed("This will advance the piece to ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
+        }
+        else if(strategy.equals("block"))
+        {
+            writeToMessageFeed("It is recommend to move the piece at ("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".");
+            writeToMessageFeed("This will block the computer piece by moving to ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
+        }
+        else if(strategy.equals("retreat"))
+        {
+            writeToMessageFeed("It is recommend to move the piece at("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".");
+            writeToMessageFeed("This will retreat the piece by moving to ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
+        }
+        else if(strategy.equals("capture"))
+        {
+            writeToMessageFeed("It is recommend to move the piece at ("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".");
+            writeToMessageFeed("This capture the computer piece at ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
+        }
+    }
+
+    private void displayComputerStrategy(int initialRow, int initialColumn, int finalRow, int finalColumn, String direction, String strategy)
+    {
+        if(strategy.equals("forward"))
+        {
+            writeToMessageFeed("Computer is moving piece at ("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".");
+            writeToMessageFeed("This will advance its piece to ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
+        }
+        else if(strategy.equals("block"))
+        {
+            writeToMessageFeed("Computer is moving piece at ("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".");
+            writeToMessageFeed("This will block the human piece by moving to ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
+        }
+        else if(strategy.equals("retreat"))
+        {
+            writeToMessageFeed("Computer is moving piece at ("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".");
+            writeToMessageFeed("This will retreat its piece by moving to ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
+        }
+        else if(strategy.equals("capture"))
+        {
+            writeToMessageFeed("Computer is moving piece at ("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".");
+            writeToMessageFeed("This capture the human piece at ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
+        }
     }
 
 
@@ -313,7 +401,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     };
-
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void highlightSelectedPiece(View v)

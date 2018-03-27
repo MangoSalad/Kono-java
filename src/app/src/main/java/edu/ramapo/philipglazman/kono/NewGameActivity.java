@@ -1,9 +1,11 @@
 package edu.ramapo.philipglazman.kono;
 
 import android.content.Intent;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -12,6 +14,16 @@ import android.widget.TextView;
 import java.util.Random;
 
 public class NewGameActivity extends AppCompatActivity {
+
+    private final String ROUND_NUM = "ROUND_NUM";
+    private final String BOARD = "BOARD";
+    private final String COMPUTER_SCORE = "COMPUTER_SCORE";
+    private final String COMPUTER_COLOR = "COMPUTER_COLOR";
+    private final String HUMAN_SCORE = "HUMAN_SCORE";
+    private final String HUMAN_COLOR = "HUMAN_COLOR";
+    private final String FIRST_PLAYER = "FIRST_PLAYER";
+    private final String BOARD_SIZE = "BOARD_SIZE";
+
 
     private final String BLACK = "black";
     private final String WHITE = "white";
@@ -25,6 +37,7 @@ public class NewGameActivity extends AppCompatActivity {
 
     private Random randomGenerator =  new Random();
 
+    private String startType;
     private GameConfiguration config;
 
     @Override
@@ -32,45 +45,74 @@ public class NewGameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_game);
 
-        String startType = getIntent().getStringExtra("START_TYPE");
+
+        startType = new String(getIntent().getStringExtra("START_TYPE"));
         config = new GameConfiguration(startType);
 
-        // TODO serialization
-        if(startType.equals("load"))
+        if(this.startType.equals("load"))
         {
-
+            this.askFileName();
         }
         else
         {
             choosePlayers();
+            View linearLayout = findViewById(R.id.chooseBoardSize);
+            linearLayout.setVisibility(View.VISIBLE);
         }
     }
 
-    /**
-     * Submits settings for game and starts main activity.
-     */
-    public void readySubmit(View view)
+    public void askFileName()
+    {
+        View fileText = findViewById(R.id.fileName);
+        fileText.setVisibility(View.VISIBLE);
+    }
+
+
+    private void passLoadGameToMain()
+    {
+        Intent intent = new Intent(this, MainActivity.class);
+
+        // Pass Round Number.
+        intent.putExtra(ROUND_NUM,Integer.toString(config.getRoundNum()));
+
+        // Pass Computer Score.
+        intent.putExtra(COMPUTER_SCORE, Integer.toString(config.getComputerScore()));
+
+        // Pass Computer Color.
+        intent.putExtra(COMPUTER_COLOR, config.getComputerColor());
+
+        // Pass Human Score.
+        intent.putExtra(HUMAN_SCORE,Integer.toString(config.getHumanScore()));
+
+        // Pass Human Color.
+        intent.putExtra(HUMAN_COLOR,config.getHumanColor());
+
+        // Pass Board.
+        intent.putExtra(BOARD,config.getBoard());
+
+        // Pass Next Player.
+        intent.putExtra(FIRST_PLAYER,config.getNextPlayer());
+
+        startActivity(intent);
+    }
+
+    private void passNewToMain()
     {
         // Get selected radio button for human player color.
-        if(firstPlayer.equals(HUMAN_PLAYER))
-        {
+        if (firstPlayer.equals(HUMAN_PLAYER)) {
             RadioGroup choosePlayerColor = (RadioGroup) findViewById(R.id.choosePlayerColor_rg);
             RadioButton playerColorChosen = (RadioButton) findViewById(choosePlayerColor.getCheckedRadioButtonId());
 
             String humanPlayer = playerColorChosen.getText().toString();
 
-            if(humanPlayer.equals(BLACK))
-            {
-                humanPlayerColor=BLACK;
-                computerPlayerColor=WHITE;
-            }
-            else if(humanPlayer.equals(WHITE))
-            {
-                humanPlayerColor=WHITE;
-                computerPlayerColor=BLACK;
+            if (humanPlayer.equals(BLACK)) {
+                humanPlayerColor = BLACK;
+                computerPlayerColor = WHITE;
+            } else if (humanPlayer.equals(WHITE)) {
+                humanPlayerColor = WHITE;
+                computerPlayerColor = BLACK;
             }
         }
-
         // Get selected radio button for board size.
         RadioGroup chooseBoardSize = (RadioGroup) findViewById(R.id.chooseBoardSize_rg);
         RadioButton boardSizeButton = (RadioButton) findViewById(chooseBoardSize.getCheckedRadioButtonId());
@@ -79,13 +121,42 @@ public class NewGameActivity extends AppCompatActivity {
 
 
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("BOARD_SIZE",boardSize.toString());
-        intent.putExtra("HUMAN_PLAYER_COLOR",humanPlayerColor);
-        intent.putExtra("COMPUTER_PLAYER_COLOR",computerPlayerColor);
-        intent.putExtra("FIRST_PLAYER", firstPlayer);
+        intent.putExtra(BOARD_SIZE, boardSize.toString());
+        intent.putExtra(HUMAN_COLOR, humanPlayerColor);
+        intent.putExtra(COMPUTER_COLOR, computerPlayerColor);
+        intent.putExtra(FIRST_PLAYER, firstPlayer);
 
-        startActivity( intent );
+        startActivity(intent);
+    }
 
+    /**
+     * Submits settings for game and starts main activity.
+     */
+    public void readySubmit(View view)
+    {
+        if(startType.equals("load"))
+        {
+            // check if file can open.
+            EditText fileText = findViewById(R.id.fileName);
+            String fileName = fileText.getText().toString();
+
+            // If file is valid, load it.
+            if(config.isValidFile(fileName))
+            {
+                config.loadGame();
+                this.passLoadGameToMain();
+            }
+            // Else notify user that they need to input a new file name.
+            else
+            {
+                TextInputLayout fileNameLayout = (TextInputLayout) findViewById(R.id.fileNameLayout);
+                fileNameLayout.setError("Invalid file.");
+            }
+        }
+        else if(startType.equals("new"))
+        {
+            this.passNewToMain();
+        }
     }
 
     private void announcePlayerColor()
