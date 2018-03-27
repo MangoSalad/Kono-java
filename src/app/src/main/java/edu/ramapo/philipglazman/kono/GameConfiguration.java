@@ -5,13 +5,19 @@ import android.os.Environment;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by mango on 3/25/18.
@@ -20,7 +26,7 @@ import java.util.Vector;
 public class GameConfiguration {
 
     private String startType;
-    private Random randomGenerator =  new Random();
+    private Random randomGenerator = new Random();
 
     private int roundNum;
     private int computerScore;
@@ -30,46 +36,121 @@ public class GameConfiguration {
     private String nextPlayer;
     private char[][] board;
 
-    public GameConfiguration(String startType)
-    {
+    public GameConfiguration(String startType) {
         this.startType = new String(startType);
+    }
+
+    public GameConfiguration(int roundNum, int computerScore, String computerColor,
+                             int humanScore, String humanColor, char[][] board, String nextPlayer)
+    {
+        this.roundNum = roundNum;
+        this.computerScore = computerScore;
+        this.computerColor = computerColor;
+        this.humanScore = humanScore;
+        this.humanColor = humanColor;
+
+        this.board = new char[board.length][board.length];
+        for(int i =0; i < board.length; i++)
+        {
+            for(int j =0; j <board.length; j++)
+            {
+                this.board[i][j]=board[i][j];
+            }
+        }
+
+        this.nextPlayer = nextPlayer;
     }
 
     public int getRoundNum() {
         return roundNum;
     }
 
-    public int getComputerScore(){
+    public int getComputerScore() {
         return computerScore;
     }
 
-    public String getComputerColor(){
+    public String getComputerColor() {
         return computerColor.toLowerCase();
     }
 
-    public int getHumanScore(){
+    public int getHumanScore() {
         return humanScore;
     }
 
-    public String getHumanColor(){
+    public String getHumanColor() {
         return humanColor.toLowerCase();
     }
 
-    public char[][] getBoard()
-    {
+    public char[][] getBoard() {
         return board;
     }
 
-    public String getNextPlayer()
-    {
+    public String getNextPlayer() {
         return nextPlayer.toLowerCase();
     }
 
-    // Load file
-    public void loadGame()
+    public void saveGame(String fileName)
     {
         File filePath = Environment.getExternalStorageDirectory();
-        File file = new File(filePath,"case1.txt");
+        File file = new File(filePath,fileName);
+
+        if(file.exists())
+        {
+            file.delete();
+            Log.d("File deleted","file deleted");
+        }
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+            Log.d("FILE", "File exists.");
+            try {
+                BufferedWriter bw = new BufferedWriter(new FileWriter(file,false));
+
+                bw.write("Round: "+Integer.toString(roundNum));
+                bw.newLine();
+
+                bw.write("Computer: ");
+                bw.newLine();
+                bw.write("  Score: "+Integer.toString(computerScore));
+                bw.newLine();
+                bw.write("  Color: "+computerColor);
+                bw.newLine();
+
+                bw.write("Human: ");
+                bw.newLine();
+                bw.write("  Score: "+Integer.toString(humanScore));
+                bw.newLine();
+                bw.write("  Color: "+humanColor);
+                bw.newLine();
+
+                bw.write("Board: ");
+                bw.newLine();
+                for(int i = 0; i <board.length; i++)
+                {
+                    bw.write(board[i]);
+                    bw.newLine();
+                }
+
+                bw.write("Next Player: "+nextPlayer);
+
+                bw.close();
+                Log.d("FILE", "file written");
+
+
+            } catch (IOException e) {
+                Log.d("FILE", "file not written");
+                e.printStackTrace();
+            }
+
+    }
+
+    // Load file
+    public void loadGame(String fileName)
+    {
+        File filePath = Environment.getExternalStorageDirectory();
+        File file = new File(filePath,fileName);
 
         StringBuilder contents = new StringBuilder();
 

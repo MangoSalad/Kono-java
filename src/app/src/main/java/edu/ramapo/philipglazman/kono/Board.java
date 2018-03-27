@@ -197,6 +197,11 @@ public class Board {
         }
         else
         {
+            Log.d("Initial Row",Integer.toString(initialRow));
+            Log.d("Initial Column",Integer.toString(initialColumn));
+            Log.d("Final Row",Integer.toString(finalRow));
+            Log.d("Final Column",Integer.toString(finalColumn));
+
             board[finalRow][finalColumn]=board[initialRow][initialColumn];
         }
         board[initialRow][initialColumn]='+';
@@ -262,6 +267,76 @@ public class Board {
         {
             return false;
         }
+    }
+
+    public int getNumOfWhitePieces()
+    {
+        int numWhite = 0;
+
+        for(int i = 0; i < board.length; i++)
+        {
+            for(int j = 0; j < board.length; j++)
+            {
+                if(board[i][j] == 'w' || board[i][j] == 'W')
+                {
+                    numWhite++;
+                }
+            }
+        }
+
+        return numWhite;
+    }
+
+    public int getNumOfBlackPieces()
+    {
+        int numBlack = 0;
+
+        for(int i = 0; i < board.length; i++)
+        {
+            for(int j = 0; j < board.length; j++)
+            {
+                if(board[i][j] == 'b' || board[i][j] == 'B')
+                {
+                    numBlack++;
+                }
+            }
+        }
+
+        return numBlack;
+    }
+
+    public Vector<Character> getBlackSide()
+    {
+        Vector<Character> blackSide = new Vector<>(board.length + 2, '+');
+
+        int  i =0;
+        for(; i < board.length; i++)
+        {
+            blackSide.add(i,board[board.length-1][i]);
+        }
+
+        blackSide.add(i,board[board.length-2][0]);
+        i++;
+        blackSide.add(i,board[board.length-2][board.length-1]);
+
+        return blackSide;
+    }
+
+    public Vector<Character> getWhiteSide()
+    {
+        Vector<Character> whiteSide = new Vector<>(board.length + 2, '+');
+
+        int i = 0;
+        for(; i < board.length; i++)
+        {
+            whiteSide.add(i,board[0][i]);
+        }
+
+        whiteSide.add(i,board[1][0]);
+        i++;
+        whiteSide.add(i,board[1][board.length-1]);
+
+        return whiteSide;
     }
 
 }

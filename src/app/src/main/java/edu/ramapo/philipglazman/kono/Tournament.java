@@ -23,4 +23,35 @@ public class Tournament {
         this.computerScore = computerScore;
         this.humanScore = humanScore;
     }
+
+    public void setHumanScore(int humanScore)
+    {
+        this.humanScore=humanScore;
+    }
+
+    public void setComputerScore(int computerScore)
+    {
+        this.computerScore=computerScore;
+    }
+
+    public void subtractHumanScore(int numToSubtract)
+    {
+        this.humanScore-=numToSubtract;
+    }
+
+    public int getRoundNum()
+    {
+        return roundNum;
+    }
+
+    public int getComputerScore()
+    {
+        return computerScore;
+    }
+
+    public int getHumanScore()
+    {
+        return humanScore;
+    }
+
 }

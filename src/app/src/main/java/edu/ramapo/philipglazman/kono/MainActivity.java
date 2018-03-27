@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private Computer computer;
     private Computer help;
     private Tournament tournament;
+    private GameConfiguration config;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -275,10 +276,7 @@ public class MainActivity extends AppCompatActivity {
 
             board.updateBoard(initialCoordinates.first, initialCoordinates.second, finalCoordinates.first, finalCoordinates.second);
 
-            refreshBoard();
-
-            round.setNextTurn();
-            setComputerModeButton();
+            this.startNextRound();
         }
         else if(round.getCurrentTurn().equals("human"))
         {
@@ -353,11 +351,6 @@ public class MainActivity extends AppCompatActivity {
                 int row = Character.getNumericValue(v.getTag().toString().charAt(0));
                 int column = Character.getNumericValue(v.getTag().toString().charAt(1));
 
-                // Identify row and column for debugging.
-                writeToMessageFeed(Integer.toString(row));
-                writeToMessageFeed(Integer.toString(column));
-                writeToMessageFeed(Boolean.toString(board.isValidPieceToMove(round.getHumanPlayerColorAsChar(),row,column)));
-
                 // If an initial piece was selected.
                 if(human.isInitialPieceSelected())
                 {
@@ -371,15 +364,10 @@ public class MainActivity extends AppCompatActivity {
                     {
                         if(board.isValidMove(human.getInitialRow(),human.getInitialColumn(),row,column))
                         {
-                            writeToMessageFeed("Moving from ("+human.getInitialRow()+","+human.getInitialColumn()+").");
                             board.updateBoard(human.getInitialRow(),human.getInitialColumn(),row,column);
-                            refreshBoard();
 
-                            writeToMessageFeed("Valid location to move to.");
-                            round.setNextTurn();
-
+                            startNextRound();
                             human.clear();
-                            setComputerModeButton();
                         }
 
                     }
@@ -390,7 +378,6 @@ public class MainActivity extends AppCompatActivity {
                     // If piece selected is valid.
                     if(board.isValidPieceToMove(round.getHumanPlayerColorAsChar(),row,column))
                     {
-                        writeToMessageFeed("Valid piece to move");
                         highlightSelectedPiece(v);
                         human.setInitialPosition(row,column);
                     }
@@ -410,5 +397,37 @@ public class MainActivity extends AppCompatActivity {
         gd.setCornerRadius(5);
         gd.setStroke(2, BLACK_COLOR);
         v.setBackground(gd);
+    }
+
+    // Starts next round.
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    private void startNextRound()
+    {
+        this.refreshBoard();
+        round.setNextTurn();
+        this.setComputerModeButton();
+
+        // Check if winner.
+        if(round.isWon(board.getBlackSide(),board.getWhiteSide()))
+        {
+            round.calculateScore(board.getBoard(),board.getNumOfWhitePieces(),board.getNumOfBlackPieces());
+            tournament.setHumanScore(round.getHumanScore());
+            tournament.setComputerScore(round.getComputerScore());
+        }
+    }
+
+    public void quitGame(View v)
+    {
+        tournament.subtractHumanScore(5);
+    }
+
+    public void saveGame(View v)
+    {
+        config = new GameConfiguration(tournament.getRoundNum(),tournament.getComputerScore(),
+                round.getComputerPlayerColor(),tournament.getHumanScore(),round.getHumanPlayerColor(),
+                board.getBoard(),round.getCurrentTurn());
+
+        String fileName = "case2.txt";
+        config.saveGame(fileName);
     }
 }

@@ -143,7 +143,7 @@ public class NewGameActivity extends AppCompatActivity {
             // If file is valid, load it.
             if(config.isValidFile(fileName))
             {
-                config.loadGame();
+                config.loadGame(fileName);
                 this.passLoadGameToMain();
             }
             // Else notify user that they need to input a new file name.

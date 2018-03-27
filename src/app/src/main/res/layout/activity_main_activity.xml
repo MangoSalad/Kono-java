@@ -16,10 +16,11 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <Button
-            android:id="@+id/button10"
+            android:id="@+id/saveGame"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:onClick="saveGame"
             android:text="Save" />
 
         <Button
@@ -31,10 +32,11 @@
             android:text="Help Mode" />
 
         <Button
-            android:id="@+id/button12"
+            android:id="@+id/quit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:onClick="quitGame"
             android:text="Quit" />
     </LinearLayout>
 
