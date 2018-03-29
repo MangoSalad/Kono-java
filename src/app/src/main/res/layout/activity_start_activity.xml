@@ -4,58 +4,53 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
     tools:context="edu.ramapo.philipglazman.kono.StartActivity">
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="131dp"
-        android:layout_height="81dp"
+        android:layout_width="593dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:fontFamily="casual"
         android:text="Kono"
+        android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Display3"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.037" />
+        android:textSize="200sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="40dp"
+        android:id="@+id/loadGame"
+        android:layout_width="210dp"
+        android:layout_height="143dp"
+        android:layout_marginBottom="500dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         android:onClick="startLoadGame"
         android:text="Load Game"
+        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.082" />
+        app:layout_constraintVertical_bias="0.75" />
 
     <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
+        android:id="@+id/startGame"
+        android:layout_width="210dp"
+        android:layout_height="143dp"
+        android:layout_marginBottom="500dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:onClick="startNewGame"
         android:text="New Game"
+        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/button"
-        app:layout_constraintHorizontal_bias="0.302"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.082" />
-
-    <LinearLayout
-        android:id="@+id/feed"
-        android:layout_width="368dp"
-        android:layout_height="352dp"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="207dp"></LinearLayout>
+        app:layout_constraintVertical_bias="0.74" />
 
 </android.support.constraint.ConstraintLayout>

@@ -121,9 +121,6 @@ public class MainActivity extends AppCompatActivity {
         // Announce player colors.
         writeToMessageFeed("Computer will play as "+round.getComputerPlayerColor()+".");
         writeToMessageFeed("Human will play as "+round.getHumanPlayerColor()+".");
-
-        // Announce current turn.
-        writeToMessageFeed("It is "+round.getCurrentTurn()+"'s turn.");
     }
 
     public void writeToMessageFeed(String message)
@@ -131,7 +128,8 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout linearLayout = (LinearLayout)findViewById(R.id.gameMessages);
         TextView textView = new TextView(this);
         textView.setText(message);
-        linearLayout.addView(textView);
+        textView.setTextSize(25);
+        linearLayout.addView(textView,0);
     }
 
 
@@ -347,7 +345,6 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             if (round.getCurrentTurn().equals("human"))
             {
-                writeToMessageFeed(round.getCurrentTurn()+" clicked "+v.getTag().toString());
                 int row = Character.getNumericValue(v.getTag().toString().charAt(0));
                 int column = Character.getNumericValue(v.getTag().toString().charAt(1));
 

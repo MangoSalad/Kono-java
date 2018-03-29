@@ -1,6 +1,8 @@
 package edu.ramapo.philipglazman.kono;
 
 import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -159,12 +161,14 @@ public class NewGameActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void announcePlayerColor()
     {
         LinearLayout linearLayout = (LinearLayout)findViewById(R.id.diceRolls);
         TextView textView = new TextView(this);
-
-        textView.setText("Human will play "+humanPlayerColor + ". Computer will play "+computerPlayerColor);
+        textView.setTextAlignment(textView.TEXT_ALIGNMENT_CENTER);
+        textView.setTextSize(25);
+        textView.setText("Human will play "+humanPlayerColor + ". Computer will play "+computerPlayerColor+".");
         linearLayout.addView(textView);
     }
 
@@ -175,12 +179,14 @@ public class NewGameActivity extends AppCompatActivity {
         firstPlayer = HUMAN_PLAYER;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void announceDiceRoll(int humanDiceRoll, int computerDiceRoll)
     {
         LinearLayout linearLayout = (LinearLayout)findViewById(R.id.diceRolls);
         TextView textView = new TextView(this);
-
-        textView.setText("Human rolled "+humanDiceRoll + ". Computer rolled "+computerDiceRoll);
+        textView.setTextAlignment(textView.TEXT_ALIGNMENT_CENTER);
+        textView.setTextSize(25);
+        textView.setText("Human rolled "+humanDiceRoll + ". Computer rolled "+computerDiceRoll+".");
         linearLayout.addView(textView);
     }
 
