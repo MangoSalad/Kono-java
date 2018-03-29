@@ -16,6 +16,7 @@ public class EndActivity extends AppCompatActivity {
     private int roundHumanScore;
     private int tournamentComputerScore;
     private int tournamentHumanScore;
+    private int awardedPoints;
 
 
     @Override
@@ -29,6 +30,8 @@ public class EndActivity extends AppCompatActivity {
 
         this.tournamentComputerScore = Integer.parseInt(getIntent().getStringExtra("TOURNAMENT_COMPUTER_SCORE"));
         this.tournamentHumanScore = Integer.parseInt(getIntent().getStringExtra("TOURNAMENT_HUMAN_SCORE"));
+
+        this.awardedPoints = Integer.parseInt(getIntent().getStringExtra("AWARDED_POINTS"));
 
         this.displayRoundResult();
         this.displayTournamentResult();
@@ -50,13 +53,27 @@ public class EndActivity extends AppCompatActivity {
     {
         TextView roundResult = (TextView)findViewById(R.id.tournamentScores);
 
-        roundResult.setText("Tournament Scores!\nComputer scored "+tournamentComputerScore+".\nHuman scored "+tournamentHumanScore+".");
+        if(!winner.equals("draw"))
+        {
+            roundResult.setText("Tournament Scores!\n"+awardedPoints+" points awarded to "+winner+".\nComputer scored "+tournamentComputerScore+".\nHuman scored "+tournamentHumanScore+".");
+        }
+        else
+        {
+            roundResult.setText("Tournament Scores!\nComputer scored "+tournamentComputerScore+".\nHuman scored "+tournamentHumanScore+".");
+        }
     }
 
     public void playGame(View view)
     {
         Intent intent = new Intent(this, NewGameActivity.class);
         intent.putExtra("START_TYPE","new");
+        intent.putExtra("TOURNAMENT_HUMAN_SCORE",Integer.toString(this.tournamentHumanScore));
+        intent.putExtra("TOURNAMENT_COMPUTER_SCORE",Integer.toString(this.tournamentComputerScore));
+        intent.putExtra("START_TYPE","new");
+        if(!winner.equals("draw"))
+        {
+            intent.putExtra("FIRST_PLAYER",this.winner);
+        }
         startActivity( intent );
     }
 

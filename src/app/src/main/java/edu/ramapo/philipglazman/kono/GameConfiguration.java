@@ -201,21 +201,25 @@ public class GameConfiguration {
                 if(line.contains("Computer:"))
                 {
                     String score = br.readLine();
-                    computerScore = Integer.parseInt(score.split(" ")[4]);
+                    String scoreSplit[]= score.split(" ");
+                    computerScore = Integer.parseInt(scoreSplit[scoreSplit.length-1]);
                     Log.d("ComputerScore",Integer.toString(computerScore));
 
                     String color = br.readLine();
-                    computerColor = color.split(" ")[4];
+                    String colorSplit[]= color.split(" ");
+                    computerColor = colorSplit[colorSplit.length-1];
                     Log.d("ComputerColor",computerColor);
                 }
                 if(line.contains("Human:"))
                 {
                     String score = br.readLine();
-                    humanScore = Integer.parseInt(score.split(" ")[4]);
+                    String scoreSplit[]= score.split(" ");
+                    humanScore = Integer.parseInt(scoreSplit[scoreSplit.length-1]);
                     Log.d("HumanScore",Integer.toString(humanScore));
 
                     String color = br.readLine();
-                    humanColor = color.split(" ")[4];
+                    String colorSplit[]= color.split(" ");
+                    humanColor = colorSplit[colorSplit.length-1];
                     Log.d("HumanColor",humanColor);
                 }
                 if(line.contains("Board:"))

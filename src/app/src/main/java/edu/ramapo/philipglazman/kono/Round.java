@@ -1,5 +1,7 @@
 package edu.ramapo.philipglazman.kono;
 
+import android.util.Log;
+
 import java.util.Vector;
 
 /**
@@ -20,11 +22,11 @@ public class Round {
     private int humanScore;
     private int computerScore;
 
-    public Round(String afirstPlayer, String ahumanPlayerColor, String acomputerPlayerColor)
+    public Round(String currentPlayer, String humanPlayerColor, String computerPlayerColor)
     {
-        currentPlayer = afirstPlayer;
-        humanPlayerColor = ahumanPlayerColor;
-        computerPlayerColor = acomputerPlayerColor;
+        this.currentPlayer = currentPlayer;
+        this.humanPlayerColor = humanPlayerColor;
+        this.computerPlayerColor = computerPlayerColor;
         humanScore = 0;
         computerScore =0;
     }
@@ -140,6 +142,10 @@ public class Round {
     }
 
     public void calculateScore(char[][] board, int numWhite, int numBlack) {
+
+        humanScore = 0;
+        computerScore = 0;
+
         // # of pieces each player starts with.
         int numberOfPieces = board.length + 2;
 
@@ -162,7 +168,7 @@ public class Round {
         }
 
         // Calculate Score if player is White
-        if(humanPlayerColor == WHITE)
+        if(humanPlayerColor.equals(WHITE))
         {
             // Deduct capture pieces.
             humanScore += (numberOfPieces - numberOfBlack) * 5;
@@ -234,7 +240,7 @@ public class Round {
         }
 
 
-        if(computerPlayerColor == WHITE)
+        if(computerPlayerColor.equals(WHITE))
         {
             computerScore +=  (numberOfPieces - numberOfBlack) * 5;
 
@@ -305,8 +311,9 @@ public class Round {
         }
 
 
-        if(humanPlayerColor == BLACK)
+        if(humanPlayerColor.equals(BLACK))
         {
+            Log.d("CALCULTE SCORE", "black human");
             humanScore +=  (numberOfPieces - numberOfWhite) * 5;
 
             //calculate human score
@@ -375,7 +382,7 @@ public class Round {
             }
         }
 
-        if(computerPlayerColor == BLACK)
+        if(computerPlayerColor.equals(BLACK))
         {
             computerScore +=  (numberOfPieces - numberOfWhite) * 5;
 

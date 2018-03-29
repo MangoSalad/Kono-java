@@ -77,7 +77,7 @@ public class Computer {
 
         for(int i=0; i<board.length; i++)
         {
-            for(int j=0; j<board[i].length; j++)
+            for(int j=0; j<board.length; j++)
             {
                 this.board[i][j]=board[i][j];
             }
@@ -294,6 +294,7 @@ public class Computer {
             }
             else if (isFriendlySouthEast(row,column) && isOpenLocation(row+1,column+1))
             {
+                Log.d("BLOCK","PLAYBLOCKEAST");
                 coordinates = new TupleCoordinates(Pair.create(row+2,column+2),Pair.create(row+1,column+1),"northwest",BLOCK);
                 return true;
             }
@@ -338,6 +339,7 @@ public class Computer {
             }
             else if (isFriendlySouthWest(row,column) && isOpenLocation(row+1,column-1))
             {
+                Log.d("BLOCK","PLAYBLOCKWEST");
                 coordinates = new TupleCoordinates(Pair.create(row+2,column-2),Pair.create(row+1,column-1),"northeast",BLOCK);
                 return true;
             }
@@ -439,7 +441,7 @@ public class Computer {
 
     private boolean isFriendlySouthWest(int row, int column)
     {
-        if(isOutOfBounds(row+2,column=2))
+        if(isOutOfBounds(row+2,column-2))
         {
             return false;
         }

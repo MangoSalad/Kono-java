@@ -9,6 +9,7 @@ public class Tournament {
     private int roundNum;
     private int computerScore;
     private int humanScore;
+    private int awardedPoints;
 
     public Tournament()
     {
@@ -52,6 +53,26 @@ public class Tournament {
     public int getHumanScore()
     {
         return humanScore;
+    }
+
+    public void addHumanScore(int addPoints)
+    {
+        this.humanScore+=addPoints;
+    }
+
+    public void addComputerScore(int addPoints)
+    {
+        this.computerScore+=addPoints;
+    }
+
+    public void setAwardedPoints(int points)
+    {
+        this.awardedPoints = points;
+    }
+
+    public int getAwardedPoints()
+    {
+        return this.awardedPoints;
     }
 
 }

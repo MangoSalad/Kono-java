@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         String computerPlayerColor = getIntent().getStringExtra("COMPUTER_COLOR");
         String firstPlayer = getIntent().getStringExtra("FIRST_PLAYER");
 
+        Log.d("HUMAN", humanPlayerColor);
         round = new Round(firstPlayer, humanPlayerColor,computerPlayerColor);
 
         human = new Human();
@@ -89,6 +90,15 @@ public class MainActivity extends AppCompatActivity {
         else
         {
             tournament = new Tournament();
+        }
+
+        if(getIntent().hasExtra("TOURNAMENT_HUMAN_SCORE"))
+        {
+            int tournamentHumanScore = Integer.parseInt(getIntent().getStringExtra("TOURNAMENT_HUMAN_SCORE"));
+            int tournamentComputerScore = Integer.parseInt(getIntent().getStringExtra("TOURNAMENT_COMPUTER_SCORE"));
+
+            tournament.setComputerScore(tournamentComputerScore);
+            tournament.setHumanScore(tournamentHumanScore);
         }
 
         setComputerModeButton();
@@ -408,8 +418,19 @@ public class MainActivity extends AppCompatActivity {
         if(round.isWon(board.getBlackSide(),board.getWhiteSide()))
         {
             round.calculateScore(board.getBoard(),board.getNumOfWhitePieces(),board.getNumOfBlackPieces());
-            tournament.setHumanScore(round.getHumanScore());
-            tournament.setComputerScore(round.getComputerScore());
+            int awardedPoints = Math.abs(round.getHumanScore()-round.getComputerScore());
+
+            tournament.setAwardedPoints(awardedPoints);
+
+            if(round.getWinner().equals("human"))
+            {
+                tournament.addHumanScore(awardedPoints);
+            }
+            else if(round.getWinner().equals("computer"))
+            {
+                tournament.addComputerScore(awardedPoints);
+            }
+            this.showResults();
         }
     }
 
@@ -426,8 +447,9 @@ public class MainActivity extends AppCompatActivity {
                 round.getComputerPlayerColor(),tournament.getHumanScore(),round.getHumanPlayerColor(),
                 board.getBoard(),round.getCurrentTurn());
 
-        String fileName = "case2.txt";
+        String fileName = "saveGame.txt";
         config.saveGame(fileName);
+        finishAffinity();
     }
 
     public void showResults()
@@ -440,6 +462,7 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("ROUND_HUMAN_SCORE",Integer.toString(round.getHumanScore()));
 
         // Put Extras for Tournament Scores
+        intent.putExtra("AWARDED_POINTS", Integer.toString(tournament.getAwardedPoints()));
         intent.putExtra("TOURNAMENT_COMPUTER_SCORE",Integer.toString(tournament.getComputerScore()));
         intent.putExtra("TOURNAMENT_HUMAN_SCORE",Integer.toString(tournament.getHumanScore()));
 

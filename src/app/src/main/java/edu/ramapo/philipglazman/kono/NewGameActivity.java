@@ -27,6 +27,9 @@ public class NewGameActivity extends AppCompatActivity {
     private final String BOARD_SIZE = "BOARD_SIZE";
 
 
+    private int tournamentHumanScore;
+    private int tournamentComputerScore;
+
     private final String BLACK = "black";
     private final String WHITE = "white";
     private final String COMPUTER_PLAYER = "computer";
@@ -42,6 +45,7 @@ public class NewGameActivity extends AppCompatActivity {
     private String startType;
     private GameConfiguration config;
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,14 +61,44 @@ public class NewGameActivity extends AppCompatActivity {
         }
         else
         {
-            choosePlayers();
-            View linearLayout = findViewById(R.id.chooseBoardSize);
-            linearLayout.setVisibility(View.VISIBLE);
+            if(getIntent().hasExtra("TOURNAMENT_HUMAN_SCORE"))
+            {
+                tournamentHumanScore = Integer.parseInt(getIntent().getStringExtra("TOURNAMENT_HUMAN_SCORE"));
+                tournamentComputerScore = Integer.parseInt(getIntent().getStringExtra("TOURNAMENT_COMPUTER_SCORE"));
+
+                if(getIntent().hasExtra("FIRST_PLAYER"))
+                {
+                    this.firstPlayer = getIntent().getStringExtra("FIRST_PLAYER");
+                    String firstPlayer = getIntent().getStringExtra("FIRST_PLAYER");
+                    if(firstPlayer.equals("human"))
+                    {
+                        askHumanForColor();
+                        View linearLayout = findViewById(R.id.chooseBoardSize);
+                        linearLayout.setVisibility(View.VISIBLE);
+                    }
+                }
+                else
+                {
+                    choosePlayers();
+                    View linearLayout = findViewById(R.id.chooseBoardSize);
+                    linearLayout.setVisibility(View.VISIBLE);
+                }
+
+            }
+            else
+            {
+                choosePlayers();
+                View linearLayout = findViewById(R.id.chooseBoardSize);
+                linearLayout.setVisibility(View.VISIBLE);
+            }
         }
     }
 
     public void askFileName()
     {
+        TextView fileLabel = findViewById(R.id.fileLabel);
+        fileLabel.setVisibility(View.VISIBLE);
+
         View fileText = findViewById(R.id.fileName);
         fileText.setVisibility(View.VISIBLE);
     }
@@ -127,6 +161,12 @@ public class NewGameActivity extends AppCompatActivity {
         intent.putExtra(HUMAN_COLOR, humanPlayerColor);
         intent.putExtra(COMPUTER_COLOR, computerPlayerColor);
         intent.putExtra(FIRST_PLAYER, firstPlayer);
+
+        if(getIntent().hasExtra("TOURNAMENT_HUMAN_SCORE"))
+        {
+            intent.putExtra("TOURNAMENT_HUMAN_SCORE",Integer.toString(tournamentHumanScore));
+            intent.putExtra("TOURNAMENT_COMPUTER_SCORE",Integer.toString(tournamentComputerScore));
+        }
 
         startActivity(intent);
     }
@@ -193,6 +233,7 @@ public class NewGameActivity extends AppCompatActivity {
     /**
      * Set colors for players.
      */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void choosePlayers()
     {
         int humanDiceRoll = config.randomDiceNumber();
@@ -223,6 +264,7 @@ public class NewGameActivity extends AppCompatActivity {
     /**
      * Randomly choose a player color for computer and human players.
      */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void randomPlayerColor()
     {
         int randomNumber = randomGenerator.nextInt(2);
