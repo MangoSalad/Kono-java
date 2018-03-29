@@ -1,5 +1,6 @@
 package edu.ramapo.philipglazman.kono;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -8,6 +9,7 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
@@ -142,71 +144,97 @@ public class MainActivity extends AppCompatActivity {
         linearLayout.addView(textView,0);
     }
 
-
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    public void createTable()
-    {
+    public void createTable() {
         // TableLayout.
         TableLayout table = (TableLayout) findViewById(R.id.boardTable);
 
         // Create rows.
-        for (int rowNum = 0; rowNum < board.getBoardLength(); rowNum++)
-        {
+        for (int rowNum = 0; rowNum <= board.getBoardLength(); rowNum++) {
             TableRow row = new TableRow(this);
+
             TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
             params.setMargins(4, 4, 4, 4);
 
-            // Create pieces.
-            for (int columnNum = 0; columnNum < board.getBoardLength(); columnNum++)
+
+            if(rowNum < board.getBoardLength())
             {
-                TextView columns = new TextView(this);
-
-                columns.setWidth(100);
-                columns.setHeight(100);
-                columns.setTextSize(20);
-
-                GradientDrawable gd = new GradientDrawable();
-
-                char piece = board.getPieceAtCoordinates(rowNum,columnNum);
-
-                if(piece == 'w' || piece == 'W')
-                {
-                    gd.setColor(WHITE_COLOR);
-                    if(piece=='w')
-                    {
-                        columns.setText("S");
-                        columns.setTextColor(BLACK_COLOR);
-                    }
-                }
-                else if(piece == 'b' || piece == 'B')
-                {
-                    gd.setColor(BLACK_COLOR);
-                    if(piece=='b')
-                    {
-                        columns.setText("S");
-                        columns.setTextColor(WHITE_COLOR);
-                    }
-                }
-                if(piece == '+')
-                {
-                    gd.setColor(OPEN_COLOR);
-                    columns.setText("");
-                }
-
-
-                gd.setCornerRadius(5);
-                gd.setStroke(2, BLACK_COLOR);
-
-                columns.setBackground(gd);
-                columns.setTag(rowNum+""+columnNum);
-
-                columns.setOnClickListener(makeMove);
-
-                row.addView(columns, params);
+                TextView rowLabel = new TextView(this);
+                rowLabel.setWidth(100);
+                rowLabel.setHeight(100);
+                rowLabel.setTextSize(20);
+                rowLabel.setText(Integer.toString(rowNum+1));
+                rowLabel.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                row.addView(rowLabel);
             }
 
+            if(rowNum == board.getBoardLength())
+            {
+                for (int columnNum = 0; columnNum <= board.getBoardLength(); columnNum++) {
+                    TextView columnLabel = new TextView(this);
+                    columnLabel.setWidth(100);
+                    columnLabel.setHeight(100);
+                    columnLabel.setTextSize(20);
+                    columnLabel.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    if(columnNum == 0)
+                    {
+                        columnLabel.setText("");
+                    }
+                    else
+                    {
+                        columnLabel.setText(Integer.toString(columnNum));
+                    }
+                    row.addView(columnLabel);
+                }
+            }
+            else {
+                // Create pieces.
+                for (int columnNum = 0; columnNum < board.getBoardLength(); columnNum++) {
+                    TextView columns = new TextView(this);
+
+                    columns.setWidth(100);
+                    columns.setHeight(100);
+                    columns.setTextSize(20);
+                    columns.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+                    GradientDrawable gd = new GradientDrawable();
+
+                    char piece = board.getPieceAtCoordinates(rowNum, columnNum);
+
+                    if (piece == 'w' || piece == 'W') {
+                        gd.setColor(WHITE_COLOR);
+                        if (piece == 'w') {
+                            columns.setText("S");
+                            columns.setTextColor(BLACK_COLOR);
+                        }
+                    } else if (piece == 'b' || piece == 'B') {
+                        gd.setColor(BLACK_COLOR);
+                        if (piece == 'b') {
+                            columns.setText("S");
+                            columns.setTextColor(WHITE_COLOR);
+                        }
+                    }
+                    if (piece == '+') {
+                        gd.setColor(OPEN_COLOR);
+                        columns.setText("");
+                    }
+
+
+                    gd.setCornerRadius(5);
+                    gd.setStroke(2, BLACK_COLOR);
+
+                    columns.setBackground(gd);
+                    columns.setTag(rowNum + "" + columnNum);
+
+                    columns.setOnClickListener(makeMove);
+
+                    row.addView(columns, params);
+                }
+            }
             table.addView(row);
         }
+
     }
 
     // Inefficient but is easier from a programmer perspective. Respectful to MVC model and is less error-prone from passing paramaters.
@@ -216,18 +244,18 @@ public class MainActivity extends AppCompatActivity {
         TableLayout table = (TableLayout) findViewById(R.id.boardTable);
         //int numberOfRows = table.getChildCount();
 
-        for (int rowNum = 0; rowNum < table.getChildCount(); rowNum++)
+        for (int rowNum = 0; rowNum < table.getChildCount()-1; rowNum++)
         {
 
             TableRow row = (TableRow) table.getChildAt(rowNum);
 
-            for (int columnNum = 0; columnNum < row.getChildCount(); columnNum++)
+            for (int columnNum = 1; columnNum < row.getChildCount(); columnNum++)
             {
                 TextView column = (TextView) row.getChildAt(columnNum);
 
                 GradientDrawable gd  = new GradientDrawable();
 
-                char piece = board.getPieceAtCoordinates(rowNum,columnNum);
+                char piece = board.getPieceAtCoordinates(rowNum,columnNum-1);
 
                 if(piece == 'w' || piece == 'W')
                 {

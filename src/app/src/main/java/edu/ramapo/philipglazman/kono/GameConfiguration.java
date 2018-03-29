@@ -316,7 +316,7 @@ public class GameConfiguration {
      */
     public int randomDiceNumber()
     {
-        int randomNumber = randomGenerator.nextInt(12)+1;
+        int randomNumber = randomGenerator.nextInt(12)+2;
         return randomNumber;
     }
 }
