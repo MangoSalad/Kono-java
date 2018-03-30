@@ -76,6 +76,13 @@ public class NewGameActivity extends AppCompatActivity {
                         View linearLayout = findViewById(R.id.chooseBoardSize);
                         linearLayout.setVisibility(View.VISIBLE);
                     }
+                    else if(firstPlayer.equals("computer"))
+                    {
+                        randomPlayerColor();
+
+                        View linearLayout = findViewById(R.id.chooseBoardSize);
+                        linearLayout.setVisibility(View.VISIBLE);
+                    }
                 }
                 else
                 {
@@ -88,6 +95,8 @@ public class NewGameActivity extends AppCompatActivity {
             else
             {
                 choosePlayers();
+                announcePlayerColor();
+                
                 View linearLayout = findViewById(R.id.chooseBoardSize);
                 linearLayout.setVisibility(View.VISIBLE);
             }

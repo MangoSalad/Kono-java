@@ -107,11 +107,14 @@ public class Round {
     }
 
     // Check if game is won.
-    public boolean isWon(Vector<Character> blackSide,Vector<Character> whiteSide)
+    public boolean isWon(Vector<Character> blackSide,Vector<Character> whiteSide, int numberOfBlack, int numberOfWhite)
     {
         // Get count of pieces for each player.
-        int numBlack = blackSide.size();
-        int numWhite = whiteSide.size();
+        int numBlack = numberOfBlack;
+        int numWhite = numberOfWhite;
+
+        Log.d("IS_WON","num black: "+numBlack);
+        Log.d("IS_WON","num white: "+numWhite);
 
         // Subtract from the number of white pieces that have reached the opposite end.
         for(int i =0; i < blackSide.size(); i++)
@@ -130,6 +133,9 @@ public class Round {
                 numBlack--;
             }
         }
+
+        Log.d("IS_WON","subtracted num black: "+numBlack);
+        Log.d("IS_WON","subtractred num white: "+numWhite);
 
         if(numWhite == 0 || numBlack == 0)
         {

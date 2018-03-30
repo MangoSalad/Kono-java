@@ -99,13 +99,15 @@ public class MainActivity extends AppCompatActivity {
             int tournamentHumanScore = Integer.parseInt(getIntent().getStringExtra("TOURNAMENT_HUMAN_SCORE"));
             int tournamentComputerScore = Integer.parseInt(getIntent().getStringExtra("TOURNAMENT_COMPUTER_SCORE"));
 
+            Log.d("TOURNEY",tournamentComputerScore+"");
+
             tournament.setComputerScore(tournamentComputerScore);
             tournament.setHumanScore(tournamentHumanScore);
         }
 
-        setComputerModeButton();
         createTable();
         announceGameSettings();
+        setComputerModeButton();
 
     }
 
@@ -308,7 +310,7 @@ public class MainActivity extends AppCompatActivity {
             String direction = computer.getDirection();
             String strategy = computer.getStrategy();
 
-            displayComputerStrategy(initialCoordinates.first,initialCoordinates.second,finalCoordinates.first,finalCoordinates.second,direction,strategy);
+            displayComputerStrategy(initialCoordinates.first+1,initialCoordinates.second+1,finalCoordinates.first+1,finalCoordinates.second+1,direction,strategy);
 
             board.updateBoard(initialCoordinates.first, initialCoordinates.second, finalCoordinates.first, finalCoordinates.second);
 
@@ -322,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
             String direction = help.getDirection();
             String strategy = help.getStrategy();
 
-            displayHelpStrategy(initialCoordinates.first,initialCoordinates.second,finalCoordinates.first,finalCoordinates.second,direction,strategy);
+            displayHelpStrategy(initialCoordinates.first+1,initialCoordinates.second+1,finalCoordinates.first+1,finalCoordinates.second+1,direction,strategy);
         }
 
     }
@@ -331,23 +333,19 @@ public class MainActivity extends AppCompatActivity {
     {
         if(strategy.equals("forward"))
         {
-            writeToMessageFeed("It is recommend to move the piece at ("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".");
-            writeToMessageFeed("This will advance the piece to ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
+            writeToMessageFeed("It is recommend to move the piece at ("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".\nThis will advance the piece to ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
         }
         else if(strategy.equals("block"))
         {
-            writeToMessageFeed("It is recommend to move the piece at ("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".");
-            writeToMessageFeed("This will block the computer piece by moving to ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
+            writeToMessageFeed("It is recommend to move the piece at ("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".\nThis will block the computer piece by moving to ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
         }
         else if(strategy.equals("retreat"))
         {
-            writeToMessageFeed("It is recommend to move the piece at("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".");
-            writeToMessageFeed("This will retreat the piece by moving to ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
+            writeToMessageFeed("It is recommend to move the piece at("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".\nThis will retreat the piece by moving to ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
         }
         else if(strategy.equals("capture"))
         {
-            writeToMessageFeed("It is recommend to move the piece at ("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".");
-            writeToMessageFeed("This capture the computer piece at ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
+            writeToMessageFeed("It is recommend to move the piece at ("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".\nThis capture the computer piece at ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
         }
     }
 
@@ -355,23 +353,19 @@ public class MainActivity extends AppCompatActivity {
     {
         if(strategy.equals("forward"))
         {
-            writeToMessageFeed("Computer is moving piece at ("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".");
-            writeToMessageFeed("This will advance its piece to ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
+            writeToMessageFeed("Computer is moving piece at ("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".\nThis will advance its piece to ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
         }
         else if(strategy.equals("block"))
         {
-            writeToMessageFeed("Computer is moving piece at ("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".");
-            writeToMessageFeed("This will block the human piece by moving to ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
+            writeToMessageFeed("Computer is moving piece at ("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".\nThis will block the human piece by moving to ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
         }
         else if(strategy.equals("retreat"))
         {
-            writeToMessageFeed("Computer is moving piece at ("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".");
-            writeToMessageFeed("This will retreat its piece by moving to ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
+            writeToMessageFeed("Computer is moving piece at ("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".\nThis will retreat its piece by moving to ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
         }
         else if(strategy.equals("capture"))
         {
-            writeToMessageFeed("Computer is moving piece at ("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".");
-            writeToMessageFeed("This capture the human piece at ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
+            writeToMessageFeed("Computer is moving piece at ("+Integer.toString(initialRow)+","+Integer.toString(initialColumn)+") "+direction+".\nThis capture the human piece at ("+Integer.toString(finalRow)+","+Integer.toString(finalColumn)+").");
         }
     }
 
@@ -443,7 +437,7 @@ public class MainActivity extends AppCompatActivity {
         this.setComputerModeButton();
 
         // Check if winner.
-        if(round.isWon(board.getBlackSide(),board.getWhiteSide()))
+        if(round.isWon(board.getBlackSide(),board.getWhiteSide(),board.getNumOfBlackPieces(),board.getNumOfWhitePieces()))
         {
             round.calculateScore(board.getBoard(),board.getNumOfWhitePieces(),board.getNumOfBlackPieces());
             int awardedPoints = Math.abs(round.getHumanScore()-round.getComputerScore());
