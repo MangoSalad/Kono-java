@@ -40,6 +40,11 @@ public class Tournament {
         this.humanScore-=numToSubtract;
     }
 
+    public void subtractComputerScore(int numToSubtract)
+    {
+        this.computerScore-=numToSubtract;
+    }
+
     public int getRoundNum()
     {
         return roundNum;

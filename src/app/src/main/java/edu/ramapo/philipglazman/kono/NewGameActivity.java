@@ -96,7 +96,7 @@ public class NewGameActivity extends AppCompatActivity {
             {
                 choosePlayers();
                 announcePlayerColor();
-                
+
                 View linearLayout = findViewById(R.id.chooseBoardSize);
                 linearLayout.setVisibility(View.VISIBLE);
             }

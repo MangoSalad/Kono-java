@@ -299,11 +299,40 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void checkComputerQuit()
+    {
+        if(round.getComputerPlayerColor().equals("white"))
+        {
+            if(board.getNumOfWhitePieces()<=2)
+            {
+                writeToMessageFeed("Computer quit game.");
+                this.computerQuit();
+            }
+        }
+        else if(round.getComputerPlayerColor().equals("black"))
+        {
+            if(board.getNumOfBlackPieces()<=2)
+            {
+                writeToMessageFeed("Computer quit game.");
+                this.computerQuit();
+            }
+
+        }
+    }
+
+    private void computerQuit()
+    {
+        tournament.subtractComputerScore(5);
+        this.showResults();
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void computerMode(View v)
     {
         if(round.getCurrentTurn().equals("computer"))
         {
+            this.checkComputerQuit();
+
             computer.play(board.getBoard());
             Pair<Integer,Integer> initialCoordinates = computer.getInitialCoordinates();
             Pair<Integer,Integer> finalCoordinates = computer.getFinalCoordinates();
