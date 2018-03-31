@@ -42,7 +42,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Player Color::" />
+            android:text="Player Color::"
+            android:textSize="20sp" />
 
         <RadioGroup
             android:id="@+id/choosePlayerColor_rg"
@@ -57,14 +58,16 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="black" />
+                android:text="black"
+                android:textSize="20sp" />
 
             <RadioButton
                 android:id="@+id/playerColor_W"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="white" />
+                android:text="white"
+                android:textSize="20sp" />
         </RadioGroup>
 
     </LinearLayout>
@@ -87,7 +90,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Game Board Size:" />
+            android:text="Game Board Size:"
+            android:textSize="20sp" />
 
         <RadioGroup
             android:id="@+id/chooseBoardSize_rg"
@@ -102,21 +106,24 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="5" />
+                android:text="5"
+                android:textSize="20sp" />
 
             <RadioButton
                 android:id="@+id/boardSize_7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="7" />
+                android:text="7"
+                android:textSize="20sp" />
 
             <RadioButton
                 android:id="@+id/boardSize_9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="9" />
+                android:text="9"
+                android:textSize="20sp" />
         </RadioGroup>
 
     </LinearLayout>
@@ -140,6 +147,7 @@
             android:layout_weight="1"
             android:ems="10"
             android:inputType="textPersonName"
+            android:textSize="25sp"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

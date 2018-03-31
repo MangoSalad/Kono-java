@@ -10,15 +10,18 @@ import java.util.Vector;
 
 public class Round {
 
+    // Constants
     private final String WHITE = "white";
     private final String BLACK = "black";
     private final char charWhite = 'W';
     private final char charBlack = 'B';
 
+    // Players
     private String currentPlayer;
     private String humanPlayerColor;
     private String computerPlayerColor;
 
+    // Player scores.
     private int humanScore;
     private int computerScore;
 
@@ -27,10 +30,14 @@ public class Round {
         this.currentPlayer = currentPlayer;
         this.humanPlayerColor = humanPlayerColor;
         this.computerPlayerColor = computerPlayerColor;
+
         humanScore = 0;
-        computerScore =0;
+        computerScore = 0;
     }
 
+    /**
+     * Setter for changing the turn.
+     */
     public void setNextTurn()
     {
         if(currentPlayer.equals("human"))
@@ -43,6 +50,10 @@ public class Round {
         }
     }
 
+    /**
+     * Getter for the winner.
+     * @return
+     */
     public String getWinner()
     {
         if(computerScore > humanScore)
@@ -59,41 +70,74 @@ public class Round {
         }
     }
 
+    /**
+     * Getter for human score.
+     * @return humanScore, integer.
+     */
     public int getHumanScore()
     {
         return humanScore;
     }
 
+    /**
+     * Getter for computer score.
+     * @return computerScore, integer.
+     */
     public int getComputerScore()
     {
         return computerScore;
     }
 
+    /**
+     * Getter for player of current turn.
+     * @return currentPlayer, String/
+     */
     public String getCurrentTurn()
     {
         return currentPlayer;
     }
 
+    /**
+     * Getter for computer player color.
+     * @return computerPlayerColor.
+     */
     public String getComputerPlayerColor()
     {
         return computerPlayerColor;
     }
 
+    /**
+     * Getter for human player color.
+     * @return humanPlayerColor.
+     */
     public String getHumanPlayerColor()
     {
         return humanPlayerColor;
     }
 
+    /**
+     * Getter for human player color as character.
+     * @return char.
+     */
     public char getHumanPlayerColorAsChar()
     {
         return colorStringToColorChar(humanPlayerColor);
     }
 
+    /**
+     * Getter for computer player color as character.
+     * @return char.
+     */
     public char getComputerPlayerColorAsChar()
     {
         return colorStringToColorChar(computerPlayerColor);
     }
 
+    /**
+     * Converts color as string to color as char.
+     * @param color, string.
+     * @return char.
+     */
     private char colorStringToColorChar(String color)
     {
         if(color.equals("white"))
@@ -106,15 +150,19 @@ public class Round {
         }
     }
 
-    // Check if game is won.
+    /**
+     * Checks if the winning condition has been met.
+     * @param blackSide
+     * @param whiteSide
+     * @param numberOfBlack
+     * @param numberOfWhite
+     * @return boolean.
+     */
     public boolean isWon(Vector<Character> blackSide,Vector<Character> whiteSide, int numberOfBlack, int numberOfWhite)
     {
         // Get count of pieces for each player.
         int numBlack = numberOfBlack;
         int numWhite = numberOfWhite;
-
-        Log.d("IS_WON","num black: "+numBlack);
-        Log.d("IS_WON","num white: "+numWhite);
 
         // Subtract from the number of white pieces that have reached the opposite end.
         for(int i =0; i < blackSide.size(); i++)
@@ -134,9 +182,7 @@ public class Round {
             }
         }
 
-        Log.d("IS_WON","subtracted num black: "+numBlack);
-        Log.d("IS_WON","subtractred num white: "+numWhite);
-
+        // If a player has moved all their pieces to the other side, then game is won.
         if(numWhite == 0 || numBlack == 0)
         {
             return true;
@@ -147,6 +193,12 @@ public class Round {
         }
     }
 
+    /**
+     * Calculates the scores for each player.
+     * @param board, state of the board.
+     * @param numWhite, number of white pieces.
+     * @param numBlack, number of black pieces.
+     */
     public void calculateScore(char[][] board, int numWhite, int numBlack) {
 
         humanScore = 0;
@@ -319,7 +371,6 @@ public class Round {
 
         if(humanPlayerColor.equals(BLACK))
         {
-            Log.d("CALCULTE SCORE", "black human");
             humanScore +=  (numberOfPieces - numberOfWhite) * 5;
 
             //calculate human score

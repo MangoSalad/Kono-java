@@ -38,10 +38,25 @@ public class GameConfiguration {
     private String nextPlayer;
     private char[][] board;
 
+
+    /**
+     * Constructor for preparing a game configuration. Used for loading a game file.
+     * @param startType
+     */
     public GameConfiguration(String startType) {
         this.startType = new String(startType);
     }
 
+    /**
+     * Constructor for loading a game configuration. Used for saving the game to file.
+     * @param roundNum
+     * @param computerScore
+     * @param computerColor
+     * @param humanScore
+     * @param humanColor
+     * @param board
+     * @param nextPlayer
+     */
     public GameConfiguration(int roundNum, int computerScore, String computerColor,
                              int humanScore, String humanColor, char[][] board, String nextPlayer)
     {
@@ -52,6 +67,8 @@ public class GameConfiguration {
         this.humanColor = humanColor;
 
         this.board = new char[board.length][board.length];
+
+        // Load board.
         for(int i =0; i < board.length; i++)
         {
             for(int j =0; j <board.length; j++)
@@ -63,58 +80,94 @@ public class GameConfiguration {
         this.nextPlayer = nextPlayer;
     }
 
+    /**
+     * Getter for round number.
+     * @return round number.
+     */
     public int getRoundNum() {
         return roundNum;
     }
 
+    /**
+     * Getter for computer score.
+     * @return computer score.
+     */
     public int getComputerScore() {
         return computerScore;
     }
 
+    /**
+     * Getter for computer color.
+     * @return computer color, string.
+     */
     public String getComputerColor() {
         return computerColor.toLowerCase();
     }
 
+    /**
+     * Getter for human score.
+     * @return human score.
+     */
     public int getHumanScore() {
         return humanScore;
     }
 
+    /**
+     * Getter for human color.
+     * @return human color.
+     */
     public String getHumanColor() {
         return humanColor.toLowerCase();
     }
 
+    /**
+     * Getter for board.
+     * @return board.
+     */
     public char[][] getBoard() {
         return board;
     }
 
+    /**
+     * Getter for next player.
+     * @return next player.
+     */
     public String getNextPlayer() {
         return nextPlayer.toLowerCase();
     }
 
+    /**
+     * Saves game configuration to a file.
+     * @param fileName, file to save to.
+     */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void saveGame(String fileName)
     {
+        // Load directory.
         File filePath = Environment.getExternalStorageDirectory();
         File file = new File(filePath,fileName);
 
+        // If file exists, delete it.
         if(file.exists())
         {
             file.delete();
-            Log.d("File deleted","file deleted");
         }
+
+        // Create a new file.
         try {
             file.createNewFile();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
-            Log.d("FILE", "File exists.");
 
         try {
+            // Use filewriter and bufferedwriter to write to file.
             FileWriter fw = new FileWriter(file, false);
             BufferedWriter bw = new BufferedWriter(fw);
+
             try {
-                //FileWriter fw = new FileWriter(file,false);
-                //BufferedWriter bw = new BufferedWriter(new FileWriter(file,false));
+                // Write to the file.
 
                 bw.write("Round: " + Integer.toString(roundNum));
                 bw.newLine();
@@ -160,15 +213,10 @@ public class GameConfiguration {
 
                 bw.newLine();
                 bw.write("Next Player: " + nextPlayer.substring(0, 1).toUpperCase() + nextPlayer.substring(1));
-
-                //bw.close();
-                //fw.close();
-                Log.d("FILE", "file written");
-
-
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
+                // Close the buffer and file.
                 bw.close();
                 fw.close();
             }
@@ -177,16 +225,21 @@ public class GameConfiguration {
         }
     }
 
-    // Load file
+    /**
+     * Load an existing game file.
+     * @param fileName, file to load.
+     */
     public void loadGame(String fileName)
     {
+        // Working directory.
         File filePath = Environment.getExternalStorageDirectory();
         File file = new File(filePath,fileName);
 
-        StringBuilder contents = new StringBuilder();
-
         try {
+            // Use bufferedreader to parse file.
             BufferedReader br = new BufferedReader(new FileReader(file));
+
+            // Hold contents.
             String line;
 
             while ((line = br.readLine()) != null)
@@ -198,6 +251,8 @@ public class GameConfiguration {
                     roundNum = Integer.parseInt(split[1]);
                     Log.d("RoundNum",Integer.toString(roundNum));
                 }
+
+                // Get computer information.
                 if(line.contains("Computer:"))
                 {
                     String score = br.readLine();
@@ -210,6 +265,8 @@ public class GameConfiguration {
                     computerColor = colorSplit[colorSplit.length-1];
                     Log.d("ComputerColor",computerColor);
                 }
+
+                // Get human information.
                 if(line.contains("Human:"))
                 {
                     String score = br.readLine();
@@ -222,6 +279,8 @@ public class GameConfiguration {
                     humanColor = colorSplit[colorSplit.length-1];
                     Log.d("HumanColor",humanColor);
                 }
+
+                // Load board.
                 if(line.contains("Board:"))
                 {
                     char[][] initBoard = new char[9][9];
@@ -276,25 +335,28 @@ public class GameConfiguration {
                         }
                     }
                 }
+
+                // Load next player.
                 if(line.contains("Next Player:"))
                 {
                     String split[]= line.split(" ");
                     nextPlayer = split[2];
                     Log.d("NextPlayer",nextPlayer);
                 }
-
-                contents.append(line);
-                contents.append('\n');
             }
+            // Close bufferedreader.
             br.close();
         }
         catch (IOException e) {
             //You'll need to add proper error handling here
         }
-
-        Log.d("file",contents.toString());
     }
 
+    /**
+     * Checks if the file is valid.
+     * @param fileName file to check.
+     * @return boolean.
+     */
     public boolean isValidFile(String fileName)
     {
         File filePath = Environment.getExternalStorageDirectory();

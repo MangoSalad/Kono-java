@@ -17,6 +17,7 @@ import java.util.Random;
 
 public class NewGameActivity extends AppCompatActivity {
 
+    // constants.
     private final String ROUND_NUM = "ROUND_NUM";
     private final String BOARD = "BOARD";
     private final String COMPUTER_SCORE = "COMPUTER_SCORE";
@@ -26,19 +27,18 @@ public class NewGameActivity extends AppCompatActivity {
     private final String FIRST_PLAYER = "FIRST_PLAYER";
     private final String BOARD_SIZE = "BOARD_SIZE";
 
-
-    private int tournamentHumanScore;
-    private int tournamentComputerScore;
-
     private final String BLACK = "black";
     private final String WHITE = "white";
     private final String COMPUTER_PLAYER = "computer";
     private final String HUMAN_PLAYER = "human";
 
+    // tournament scores.
+    private int tournamentHumanScore;
+    private int tournamentComputerScore;
 
-    private String humanPlayerColor = "";
-    private String computerPlayerColor = "";
-    private String firstPlayer = "";
+    private String humanPlayerColor;
+    private String computerPlayerColor;
+    private String firstPlayer;
 
     private Random randomGenerator =  new Random();
 
@@ -55,37 +55,45 @@ public class NewGameActivity extends AppCompatActivity {
         startType = new String(getIntent().getStringExtra("START_TYPE"));
         config = new GameConfiguration(startType);
 
+        // Load from file.
         if(this.startType.equals("load"))
         {
             this.askFileName();
         }
         else
         {
+            // Checks if tournament score was passed - used for when playing a new round of existing game.
             if(getIntent().hasExtra("TOURNAMENT_HUMAN_SCORE"))
             {
+                // Get tournament scores.
                 tournamentHumanScore = Integer.parseInt(getIntent().getStringExtra("TOURNAMENT_HUMAN_SCORE"));
                 tournamentComputerScore = Integer.parseInt(getIntent().getStringExtra("TOURNAMENT_COMPUTER_SCORE"));
 
+                // If a first player is passed a long, load it too.
                 if(getIntent().hasExtra("FIRST_PLAYER"))
                 {
                     this.firstPlayer = getIntent().getStringExtra("FIRST_PLAYER");
                     String firstPlayer = getIntent().getStringExtra("FIRST_PLAYER");
+
+                    // If human is first, ask for color and board size.
                     if(firstPlayer.equals("human"))
                     {
                         askHumanForColor();
                         View linearLayout = findViewById(R.id.chooseBoardSize);
                         linearLayout.setVisibility(View.VISIBLE);
                     }
+
+                    // If computer is first, randomly pick color.
                     else if(firstPlayer.equals("computer"))
                     {
                         randomPlayerColor();
-
                         View linearLayout = findViewById(R.id.chooseBoardSize);
                         linearLayout.setVisibility(View.VISIBLE);
                     }
                 }
                 else
                 {
+                    // Randomly pick players.
                     choosePlayers();
                     View linearLayout = findViewById(R.id.chooseBoardSize);
                     linearLayout.setVisibility(View.VISIBLE);
@@ -94,15 +102,17 @@ public class NewGameActivity extends AppCompatActivity {
             }
             else
             {
+                // Randomly pick players.
                 choosePlayers();
-                announcePlayerColor();
-
                 View linearLayout = findViewById(R.id.chooseBoardSize);
                 linearLayout.setVisibility(View.VISIBLE);
             }
         }
     }
 
+    /**
+     * Ask for file name.
+     */
     public void askFileName()
     {
         TextView fileLabel = findViewById(R.id.fileLabel);
@@ -113,6 +123,9 @@ public class NewGameActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Passes extras to next activity from loaded save game file.
+     */
     private void passLoadGameToMain()
     {
         Intent intent = new Intent(this, MainActivity.class);
@@ -141,6 +154,9 @@ public class NewGameActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Passes extras to next activity from a newly loaded game.
+     */
     private void passNewToMain()
     {
         // Get selected radio button for human player color.
@@ -210,6 +226,9 @@ public class NewGameActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Announces player color to user.
+     */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void announcePlayerColor()
     {
@@ -221,6 +240,9 @@ public class NewGameActivity extends AppCompatActivity {
         linearLayout.addView(textView);
     }
 
+    /**
+     * Asks human for player color.
+     */
     private void askHumanForColor()
     {
         View linearLayout = findViewById(R.id.choosePlayerColor);
@@ -228,6 +250,11 @@ public class NewGameActivity extends AppCompatActivity {
         firstPlayer = HUMAN_PLAYER;
     }
 
+    /**
+     * Announces dice roll.
+     * @param humanDiceRoll
+     * @param computerDiceRoll
+     */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void announceDiceRoll(int humanDiceRoll, int computerDiceRoll)
     {

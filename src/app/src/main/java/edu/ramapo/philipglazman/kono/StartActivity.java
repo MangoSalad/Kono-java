@@ -14,22 +14,25 @@ public class StartActivity extends AppCompatActivity {
     }
 
     /**
-     * Called when user taps the start button.
+     * Starts activity for new game.
      * @param view
      */
     public void startNewGame(View view)
     {
-//        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.feed);
-//        linearLayout.addView(textView);
-
         Intent intent = new Intent(this, NewGameActivity.class);
+
         intent.putExtra("START_TYPE","new");
         startActivity( intent );
     }
 
+    /**
+     * Starts activity for loading game.
+     * @param view
+     */
     public void startLoadGame(View view)
     {
         Intent intent = new Intent(this, NewGameActivity.class);
+
         intent.putExtra("START_TYPE","load");
         startActivity( intent );
     }

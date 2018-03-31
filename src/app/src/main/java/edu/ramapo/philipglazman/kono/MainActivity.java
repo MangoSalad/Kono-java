@@ -30,6 +30,7 @@ import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity {
 
+    // Constants
     private final int OPEN_COLOR = Color.WHITE;
     private final int BLACK_COLOR = Color.BLACK;
     private final int WHITE_COLOR = Color.LTGRAY;
@@ -49,39 +50,31 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_activity);
 
-
-        // Prepare board.
         // If pre-existing board exists from load game.
         if(getIntent().hasExtra("BOARD"))
         {
+            // Get the loaded board.
             char[][] loadedBoard = (char[][]) getIntent().getSerializableExtra("BOARD");
-            for(int i=0; i<loadedBoard.length;i++)
-            {
-                for(int j=0; j<loadedBoard.length;j++)
-                {
-                    Log.d("MAIN",Character.toString(loadedBoard[i][j]));
-                }
-            }
             board = new Board(loadedBoard);
         }
+        // Create new board given board size.
         else
         {
             String boardSize = getIntent().getStringExtra("BOARD_SIZE");
             board = new Board(Integer.parseInt(boardSize));
         }
 
-
+        // Get player colors and current turn.
         String humanPlayerColor = getIntent().getStringExtra("HUMAN_COLOR");
         String computerPlayerColor = getIntent().getStringExtra("COMPUTER_COLOR");
         String firstPlayer = getIntent().getStringExtra("FIRST_PLAYER");
 
-        Log.d("HUMAN", humanPlayerColor);
         round = new Round(firstPlayer, humanPlayerColor,computerPlayerColor);
-
         human = new Human();
         computer = new Computer(round.getComputerPlayerColor());
         help = new Computer(round.getHumanPlayerColor());
 
+        // If a round number exists, then load an existing tournament config.
         if(getIntent().hasExtra("ROUND_NUM"))
         {
             int roundNum = Integer.parseInt(getIntent().getStringExtra("ROUND_NUM"));
@@ -89,44 +82,51 @@ public class MainActivity extends AppCompatActivity {
             int humanScore = Integer.parseInt(getIntent().getStringExtra("HUMAN_SCORE"));
             tournament = new Tournament(roundNum, computerScore,humanScore);
         }
+        // Start new tournament.
         else
         {
             tournament = new Tournament();
         }
-
+        // If a tournament score exists, set the scores accordingly.
         if(getIntent().hasExtra("TOURNAMENT_HUMAN_SCORE"))
         {
             int tournamentHumanScore = Integer.parseInt(getIntent().getStringExtra("TOURNAMENT_HUMAN_SCORE"));
             int tournamentComputerScore = Integer.parseInt(getIntent().getStringExtra("TOURNAMENT_COMPUTER_SCORE"));
 
-            Log.d("TOURNEY",tournamentComputerScore+"");
-
             tournament.setComputerScore(tournamentComputerScore);
             tournament.setHumanScore(tournamentHumanScore);
         }
 
+        // Create table and announce it.
         createTable();
         announceGameSettings();
         setComputerModeButton();
-
     }
 
+    /**
+     * Changes the computer button depending on turn. Turns to help mode for human turn.
+     */
     private void setComputerModeButton()
     {
+        // Play button when computer's turn.
         if(round.getCurrentTurn().equals("computer"))
         {
             writeToMessageFeed("It is computer's turn.");
             Button button = (Button)findViewById(R.id.computerMode);
             button.setText("Play");
         }
+        // Help button when human's turn.
         else if(round.getCurrentTurn().equals("human"))
         {
             writeToMessageFeed("It is human's turn.");
             Button button = (Button)findViewById(R.id.computerMode);
             button.setText("Help Mode");
         }
-
     }
+
+    /**
+     * Announce to player the game settings.
+     */
     public void announceGameSettings()
     {
         // Announce board length.
@@ -137,6 +137,10 @@ public class MainActivity extends AppCompatActivity {
         writeToMessageFeed("Human will play as "+round.getHumanPlayerColor()+".");
     }
 
+    /**
+     * Write to user a line of text.
+     * @param message, message to write.
+     */
     public void writeToMessageFeed(String message)
     {
         LinearLayout linearLayout = (LinearLayout)findViewById(R.id.gameMessages);
@@ -146,20 +150,26 @@ public class MainActivity extends AppCompatActivity {
         linearLayout.addView(textView,0);
     }
 
+    /**
+     * Generates the table in GUI.
+     */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void createTable() {
+
         // TableLayout.
         TableLayout table = (TableLayout) findViewById(R.id.boardTable);
 
         // Create rows.
         for (int rowNum = 0; rowNum <= board.getBoardLength(); rowNum++) {
-            TableRow row = new TableRow(this);
 
+            // New row.
+            TableRow row = new TableRow(this);
             TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
             params.setMargins(4, 4, 4, 4);
 
 
+            // Create row labels (numbered rows).
             if(rowNum < board.getBoardLength())
             {
                 TextView rowLabel = new TextView(this);
@@ -171,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 row.addView(rowLabel);
             }
 
+            // Create column labels (numbered columns).
             if(rowNum == board.getBoardLength())
             {
                 for (int columnNum = 0; columnNum <= board.getBoardLength(); columnNum++) {
@@ -190,9 +201,14 @@ public class MainActivity extends AppCompatActivity {
                     row.addView(columnLabel);
                 }
             }
+
+            // Generate the board pieces.
             else {
-                // Create pieces.
+
+                // Create pieces/columns.
                 for (int columnNum = 0; columnNum < board.getBoardLength(); columnNum++) {
+
+                    // New coordinate.
                     TextView columns = new TextView(this);
 
                     columns.setWidth(100);
@@ -202,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
 
                     GradientDrawable gd = new GradientDrawable();
 
+                    // Use board model as reference.
                     char piece = board.getPieceAtCoordinates(rowNum, columnNum);
 
                     if (piece == 'w' || piece == 'W') {
@@ -239,26 +256,33 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    // Inefficient but is easier from a programmer perspective. Respectful to MVC model and is less error-prone from passing paramaters.
+    /**
+     * Refreshes the board using the data model.
+     */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void refreshBoard()
     {
+        // Get GUI board.
         TableLayout table = (TableLayout) findViewById(R.id.boardTable);
-        //int numberOfRows = table.getChildCount();
 
+        // For every row..
         for (int rowNum = 0; rowNum < table.getChildCount()-1; rowNum++)
         {
 
             TableRow row = (TableRow) table.getChildAt(rowNum);
 
+            // For every piece on that row...
             for (int columnNum = 1; columnNum < row.getChildCount(); columnNum++)
             {
+                // Select piece.
                 TextView column = (TextView) row.getChildAt(columnNum);
 
                 GradientDrawable gd  = new GradientDrawable();
 
+                // Get piece from data model.
                 char piece = board.getPieceAtCoordinates(rowNum,columnNum-1);
 
+                // Set the pieces on the GUI accordingly.
                 if(piece == 'w' || piece == 'W')
                 {
                     gd.setColor(WHITE_COLOR);
@@ -299,6 +323,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Check if computer can meet condition to quit. If only 2 pieces remain for computer, it will quit.
+     */
     private void checkComputerQuit()
     {
         if(round.getComputerPlayerColor().equals("white"))
@@ -320,44 +347,68 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Computer quits game.
+     */
     private void computerQuit()
     {
         tournament.subtractComputerScore(5);
         this.showResults();
     }
 
+    /**
+     * On click handler for computer mode (help/play).
+     * @param v
+     */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void computerMode(View v)
     {
+        // If it is computer's turn.
         if(round.getCurrentTurn().equals("computer"))
         {
+            // Check if computer should quit.
             this.checkComputerQuit();
 
+            // Make computer play.
             computer.play(board.getBoard());
             Pair<Integer,Integer> initialCoordinates = computer.getInitialCoordinates();
             Pair<Integer,Integer> finalCoordinates = computer.getFinalCoordinates();
             String direction = computer.getDirection();
             String strategy = computer.getStrategy();
 
+            // Announce decision and update board.
             displayComputerStrategy(initialCoordinates.first+1,initialCoordinates.second+1,finalCoordinates.first+1,finalCoordinates.second+1,direction,strategy);
 
             board.updateBoard(initialCoordinates.first, initialCoordinates.second, finalCoordinates.first, finalCoordinates.second);
 
+            // next turn.
             this.startNextRound();
         }
+        // If human's turn.
         else if(round.getCurrentTurn().equals("human"))
         {
+            // Have computer make decision on which piece to play.
             help.play(board.getBoard());
             Pair<Integer,Integer> initialCoordinates = help.getInitialCoordinates();
             Pair<Integer,Integer> finalCoordinates = help.getFinalCoordinates();
             String direction = help.getDirection();
             String strategy = help.getStrategy();
 
+            // Announce help strategy.
             displayHelpStrategy(initialCoordinates.first+1,initialCoordinates.second+1,finalCoordinates.first+1,finalCoordinates.second+1,direction,strategy);
         }
 
     }
 
+    /**
+     * Announce help strategy to user.
+     * @param initialRow
+     * @param initialColumn
+     * @param finalRow
+     * @param finalColumn
+     * @param direction
+     * @param strategy
+     */
     private void displayHelpStrategy(int initialRow, int initialColumn, int finalRow, int finalColumn, String direction, String strategy)
     {
         if(strategy.equals("forward"))
@@ -378,6 +429,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Announces computer strategy to user.
+     * @param initialRow
+     * @param initialColumn
+     * @param finalRow
+     * @param finalColumn
+     * @param direction
+     * @param strategy
+     */
     private void displayComputerStrategy(int initialRow, int initialColumn, int finalRow, int finalColumn, String direction, String strategy)
     {
         if(strategy.equals("forward"))
@@ -398,12 +458,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * On click handler for when clicking a piece on the board.
+     */
     private View.OnClickListener makeMove = new View.OnClickListener() {
 
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
         @Override
         public void onClick(View v) {
+            // If the player's turn is human.
             if (round.getCurrentTurn().equals("human"))
             {
                 int row = Character.getNumericValue(v.getTag().toString().charAt(0));
@@ -447,6 +510,10 @@ public class MainActivity extends AppCompatActivity {
 
     };
 
+    /**
+     * Highlights a piece  - used for when user is selecting a piece.
+     * @param v
+     */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void highlightSelectedPiece(View v)
     {
@@ -457,7 +524,10 @@ public class MainActivity extends AppCompatActivity {
         v.setBackground(gd);
     }
 
-    // Starts next round.
+
+    /**
+     * Starts next turn - and checks if a winner exists.
+     */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void startNextRound()
     {
@@ -468,6 +538,7 @@ public class MainActivity extends AppCompatActivity {
         // Check if winner.
         if(round.isWon(board.getBlackSide(),board.getWhiteSide(),board.getNumOfBlackPieces(),board.getNumOfWhitePieces()))
         {
+            // IF winner, calculate score.
             round.calculateScore(board.getBoard(),board.getNumOfWhitePieces(),board.getNumOfBlackPieces());
             int awardedPoints = Math.abs(round.getHumanScore()-round.getComputerScore());
 
@@ -481,16 +552,25 @@ public class MainActivity extends AppCompatActivity {
             {
                 tournament.addComputerScore(awardedPoints);
             }
+            // Move onto next activity.
             this.showResults();
         }
     }
 
+    /**
+     * Quit game for human.
+     * @param v
+     */
     public void quitGame(View v)
     {
         tournament.subtractHumanScore(5);
         this.showResults();
     }
 
+    /**
+     * Saves game.
+     * @param v
+     */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void saveGame(View v)
     {
@@ -503,6 +583,9 @@ public class MainActivity extends AppCompatActivity {
         finishAffinity();
     }
 
+    /**
+     * Moves onto next activity showing results of the round.
+     */
     public void showResults()
     {
         Intent intent = new Intent(this, EndActivity.class);
