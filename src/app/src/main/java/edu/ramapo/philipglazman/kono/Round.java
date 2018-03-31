@@ -5,7 +5,7 @@ import android.util.Log;
 import java.util.Vector;
 
 /**
- * Created by mango on 3/23/18.
+ * Responsible for maintaining the logic of the round such as scores and player colors.
  */
 
 public class Round {
@@ -33,21 +33,6 @@ public class Round {
 
         humanScore = 0;
         computerScore = 0;
-    }
-
-    /**
-     * Setter for changing the turn.
-     */
-    public void setNextTurn()
-    {
-        if(currentPlayer.equals("human"))
-        {
-            currentPlayer="computer";
-        }
-        else if(currentPlayer.equals("computer"))
-        {
-            currentPlayer="human";
-        }
     }
 
     /**
@@ -134,19 +119,17 @@ public class Round {
     }
 
     /**
-     * Converts color as string to color as char.
-     * @param color, string.
-     * @return char.
+     * Setter for changing the turn.
      */
-    private char colorStringToColorChar(String color)
+    public void setNextTurn()
     {
-        if(color.equals("white"))
+        if(currentPlayer.equals("human"))
         {
-            return 'W';
+            currentPlayer="computer";
         }
-        else
+        else if(currentPlayer.equals("computer"))
         {
-            return 'B';
+            currentPlayer="human";
         }
     }
 
@@ -509,5 +492,22 @@ public class Round {
             }
         }
 
+    }
+
+    /**
+     * Converts color as string to color as char.
+     * @param color, string.
+     * @return char.
+     */
+    private char colorStringToColorChar(String color)
+    {
+        if(color.equals("white"))
+        {
+            return 'W';
+        }
+        else
+        {
+            return 'B';
+        }
     }
 }

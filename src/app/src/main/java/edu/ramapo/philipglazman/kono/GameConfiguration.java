@@ -22,7 +22,7 @@ import java.util.Vector;
 import static android.content.Context.MODE_PRIVATE;
 
 /**
- * Created by mango on 3/25/18.
+ * Responsible for loading existing game configuration or making new one.
  */
 
 public class GameConfiguration {

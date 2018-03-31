@@ -324,83 +324,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Check if computer can meet condition to quit. If only 2 pieces remain for computer, it will quit.
-     */
-    private void checkComputerQuit()
-    {
-        if(round.getComputerPlayerColor().equals("white"))
-        {
-            if(board.getNumOfWhitePieces()<=2)
-            {
-                writeToMessageFeed("Computer quit game.");
-                this.computerQuit();
-            }
-        }
-        else if(round.getComputerPlayerColor().equals("black"))
-        {
-            if(board.getNumOfBlackPieces()<=2)
-            {
-                writeToMessageFeed("Computer quit game.");
-                this.computerQuit();
-            }
-
-        }
-    }
-
-    /**
-     * Computer quits game.
-     */
-    private void computerQuit()
-    {
-        tournament.subtractComputerScore(5);
-        this.showResults();
-    }
-
-    /**
-     * On click handler for computer mode (help/play).
-     * @param v
-     */
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    public void computerMode(View v)
-    {
-        // If it is computer's turn.
-        if(round.getCurrentTurn().equals("computer"))
-        {
-            // Check if computer should quit.
-            this.checkComputerQuit();
-
-            // Make computer play.
-            computer.play(board.getBoard());
-            Pair<Integer,Integer> initialCoordinates = computer.getInitialCoordinates();
-            Pair<Integer,Integer> finalCoordinates = computer.getFinalCoordinates();
-            String direction = computer.getDirection();
-            String strategy = computer.getStrategy();
-
-            // Announce decision and update board.
-            displayComputerStrategy(initialCoordinates.first+1,initialCoordinates.second+1,finalCoordinates.first+1,finalCoordinates.second+1,direction,strategy);
-
-            board.updateBoard(initialCoordinates.first, initialCoordinates.second, finalCoordinates.first, finalCoordinates.second);
-
-            // next turn.
-            this.startNextRound();
-        }
-        // If human's turn.
-        else if(round.getCurrentTurn().equals("human"))
-        {
-            // Have computer make decision on which piece to play.
-            help.play(board.getBoard());
-            Pair<Integer,Integer> initialCoordinates = help.getInitialCoordinates();
-            Pair<Integer,Integer> finalCoordinates = help.getFinalCoordinates();
-            String direction = help.getDirection();
-            String strategy = help.getStrategy();
-
-            // Announce help strategy.
-            displayHelpStrategy(initialCoordinates.first+1,initialCoordinates.second+1,finalCoordinates.first+1,finalCoordinates.second+1,direction,strategy);
-        }
-
-    }
-
-    /**
      * Announce help strategy to user.
      * @param initialRow
      * @param initialColumn
@@ -524,6 +447,83 @@ public class MainActivity extends AppCompatActivity {
         v.setBackground(gd);
     }
 
+
+    /**
+     * Check if computer can meet condition to quit. If only 2 pieces remain for computer, it will quit.
+     */
+    private void checkComputerQuit()
+    {
+        if(round.getComputerPlayerColor().equals("white"))
+        {
+            if(board.getNumOfWhitePieces()<=2)
+            {
+                writeToMessageFeed("Computer quit game.");
+                this.computerQuit();
+            }
+        }
+        else if(round.getComputerPlayerColor().equals("black"))
+        {
+            if(board.getNumOfBlackPieces()<=2)
+            {
+                writeToMessageFeed("Computer quit game.");
+                this.computerQuit();
+            }
+
+        }
+    }
+
+    /**
+     * Computer quits game.
+     */
+    private void computerQuit()
+    {
+        tournament.subtractComputerScore(5);
+        this.showResults();
+    }
+
+    /**
+     * On click handler for computer mode (help/play).
+     * @param v
+     */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    public void computerMode(View v)
+    {
+        // If it is computer's turn.
+        if(round.getCurrentTurn().equals("computer"))
+        {
+            // Check if computer should quit.
+            this.checkComputerQuit();
+
+            // Make computer play.
+            computer.play(board.getBoard());
+            Pair<Integer,Integer> initialCoordinates = computer.getInitialCoordinates();
+            Pair<Integer,Integer> finalCoordinates = computer.getFinalCoordinates();
+            String direction = computer.getDirection();
+            String strategy = computer.getStrategy();
+
+            // Announce decision and update board.
+            displayComputerStrategy(initialCoordinates.first+1,initialCoordinates.second+1,finalCoordinates.first+1,finalCoordinates.second+1,direction,strategy);
+
+            board.updateBoard(initialCoordinates.first, initialCoordinates.second, finalCoordinates.first, finalCoordinates.second);
+
+            // next turn.
+            this.startNextRound();
+        }
+        // If human's turn.
+        else if(round.getCurrentTurn().equals("human"))
+        {
+            // Have computer make decision on which piece to play.
+            help.play(board.getBoard());
+            Pair<Integer,Integer> initialCoordinates = help.getInitialCoordinates();
+            Pair<Integer,Integer> finalCoordinates = help.getFinalCoordinates();
+            String direction = help.getDirection();
+            String strategy = help.getStrategy();
+
+            // Announce help strategy.
+            displayHelpStrategy(initialCoordinates.first+1,initialCoordinates.second+1,finalCoordinates.first+1,finalCoordinates.second+1,direction,strategy);
+        }
+
+    }
 
     /**
      * Starts next turn - and checks if a winner exists.

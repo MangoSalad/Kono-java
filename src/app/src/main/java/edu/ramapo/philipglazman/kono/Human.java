@@ -5,23 +5,28 @@ import android.util.Pair;
 import java.util.Stack;
 
 /**
- * Created by mango on 3/23/18.
+ * Responsible for human player turn.
  */
 
 public class Human extends Player{
 
-    // Initial Coordinates
-    private int initialRow;
-    private int initialColumn;
-
-    // Final Coordinates
-    private int finalRow;
-    private int finalColumn;
 
     public Human()
     {
         this.clear();
     }
+
+    /**
+     * Getter for final row coordinate.
+     * @return row, integer.
+     */
+    public int getFinalRow(){return finalRow;}
+
+    /**
+     * Getter for final column coordinate.
+     * @return column integer.
+     */
+    public int getFinalColumn(){return finalColumn;}
 
     /**
      * Sets the initial coordinates for human player move.
@@ -33,18 +38,6 @@ public class Human extends Player{
         initialRow=row;
         initialColumn=column;
     }
-
-    /**
-     * Getter for initial row coordinate.
-     * @return row, integer.
-     */
-    public int getInitialRow(){return initialRow;}
-
-    /**
-     * Getter for initial column coordinate.
-     * @return column, integer.
-     */
-    public int getInitialColumn(){return initialColumn;}
 
     /**
      * Checks to see if an initial coordinate has been set.
@@ -73,18 +66,6 @@ public class Human extends Player{
         finalColumn = -1;
 
     }
-
-    /**
-     * Getter for final row coordinate.
-     * @return row, integer.
-     */
-    public int getFinalRow(){return finalRow;}
-
-    /**
-     * Getter for final column coordinate.
-     * @return column integer.
-     */
-    public int getFinalColumn(){return finalColumn;}
 
     /**
      * Sets the final coordinates for human player move.

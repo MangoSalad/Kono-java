@@ -6,9 +6,24 @@ package edu.ramapo.philipglazman.kono;
 
 public class Player {
 
-    Player()
-    {
+    // Initial Coordinates
+    protected int initialRow;
+    protected int initialColumn;
 
-    }
+    // Final Coordinates
+    protected int finalRow;
+    protected int finalColumn;
+
+    /**
+     * Getter for initial row coordinate.
+     * @return row, integer.
+     */
+    public int getInitialRow(){return initialRow;}
+
+    /**
+     * Getter for initial column coordinate.
+     * @return column, integer.
+     */
+    public int getInitialColumn(){return initialColumn;}
 }
 

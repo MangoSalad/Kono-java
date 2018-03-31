@@ -5,7 +5,7 @@ import android.util.Log;
 import java.util.Vector;
 
 /**
- * Created by mango on 3/22/18.
+ * Responsible for board data model.
  */
 
 public class Board {
@@ -13,6 +13,10 @@ public class Board {
     // Board object.
     private char[][] board;
 
+    /**
+     * Constructor for new board.
+     * @param boardSize
+     */
     public Board(int boardSize)
     {
         // Creates new board.
@@ -22,7 +26,10 @@ public class Board {
         placeHomePoints();
     }
 
-    // Loads an existing board.
+    /**
+     * Constructor for loading an existing board.
+     * @param board
+     */
     public Board(char[][] board)
     {
         this.board = new char[board.length][board.length];
@@ -46,39 +53,6 @@ public class Board {
     }
 
     /**
-     * Generates home pieces on a new board.
-     */
-    private void placeHomePoints()
-    {
-        // Generate board pieces.
-        for(int i = 0; i < board.length; i++)
-        {
-            for(int j = 0; j < board[i].length; j++)
-            {
-                board[i][j] = '+';
-            }
-        }
-
-        // Place white pieces on white side.
-        for(int i = 0; i < board.length; i++)
-        {
-            board[0][i] = 'W';
-        }
-
-        board[1][0] = 'W';
-        board[1][board.length-1] = 'W';
-
-        // Place black pieces on black side.
-        for(int i = 0; i < board.length; i++)
-        {
-            board[board.length-1][i] = 'B';
-        }
-
-        board[board.length-2][0] = 'B';
-        board[board.length-2][board.length-1] = 'B';
-    }
-
-    /**
      * Getter for board length.
      * @return board length, integer.
      */
@@ -99,21 +73,89 @@ public class Board {
     }
 
     /**
-     * Checks to see if the given coordinates are out of bounds.
-     * @param row, integer.
-     * @param column, integer.
-     * @return boolean.
+     * Getter for the number of white pieces on the board.
+     * @return number of white pieces, integer.
      */
-    private boolean isOutOfBounds(int row, int column)
+    public int getNumOfWhitePieces()
     {
-        if(row < 0 || column < 0 || row >= board.length || column >= board.length)
+        int numWhite = 0;
+
+        for(int i = 0; i < board.length; i++)
         {
-            return true;
+            for(int j = 0; j < board.length; j++)
+            {
+                if(board[i][j] == 'w' || board[i][j] == 'W')
+                {
+                    numWhite++;
+                }
+            }
         }
-        else
+
+        return numWhite;
+    }
+
+    /**
+     * Getter for the number of black pieces on the board.
+     * @return number of black pieces, integer.
+     */
+    public int getNumOfBlackPieces()
+    {
+        int numBlack = 0;
+
+        for(int i = 0; i < board.length; i++)
         {
-            return false;
+            for(int j = 0; j < board.length; j++)
+            {
+                if(board[i][j] == 'b' || board[i][j] == 'B')
+                {
+                    numBlack++;
+                }
+            }
         }
+
+        return numBlack;
+    }
+
+    /**
+     * Getter for the pieces located on the black side.
+     * @return vector of pieces located on the black side, vector.
+     */
+    public Vector<Character> getBlackSide()
+    {
+        Vector<Character> blackSide = new Vector<>(board.length + 2, '+');
+
+        int  i =0;
+        for(; i < board.length; i++)
+        {
+            blackSide.add(i,board[board.length-1][i]);
+        }
+
+        blackSide.add(i,board[board.length-2][0]);
+        i++;
+        blackSide.add(i,board[board.length-2][board.length-1]);
+
+        return blackSide;
+    }
+
+    /**
+     * Getter for the pieces located on the white side.
+     * @return vector of pieces located on the white side, vector.
+     */
+    public Vector<Character> getWhiteSide()
+    {
+        Vector<Character> whiteSide = new Vector<>(board.length + 2, '+');
+
+        int i = 0;
+        for(; i < board.length; i++)
+        {
+            whiteSide.add(i,board[0][i]);
+        }
+
+        whiteSide.add(i,board[1][0]);
+        i++;
+        whiteSide.add(i,board[1][board.length-1]);
+
+        return whiteSide;
     }
 
     /**
@@ -308,89 +350,54 @@ public class Board {
     }
 
     /**
-     * Getter for the number of white pieces on the board.
-     * @return number of white pieces, integer.
+     * Generates home pieces on a new board.
      */
-    public int getNumOfWhitePieces()
+    private void placeHomePoints()
     {
-        int numWhite = 0;
-
+        // Generate board pieces.
         for(int i = 0; i < board.length; i++)
         {
-            for(int j = 0; j < board.length; j++)
+            for(int j = 0; j < board[i].length; j++)
             {
-                if(board[i][j] == 'w' || board[i][j] == 'W')
-                {
-                    numWhite++;
-                }
+                board[i][j] = '+';
             }
         }
 
-        return numWhite;
-    }
-
-    /**
-     * Getter for the number of black pieces on the board.
-     * @return number of black pieces, integer.
-     */
-    public int getNumOfBlackPieces()
-    {
-        int numBlack = 0;
-
+        // Place white pieces on white side.
         for(int i = 0; i < board.length; i++)
         {
-            for(int j = 0; j < board.length; j++)
-            {
-                if(board[i][j] == 'b' || board[i][j] == 'B')
-                {
-                    numBlack++;
-                }
-            }
+            board[0][i] = 'W';
         }
 
-        return numBlack;
+        board[1][0] = 'W';
+        board[1][board.length-1] = 'W';
+
+        // Place black pieces on black side.
+        for(int i = 0; i < board.length; i++)
+        {
+            board[board.length-1][i] = 'B';
+        }
+
+        board[board.length-2][0] = 'B';
+        board[board.length-2][board.length-1] = 'B';
     }
 
     /**
-     * Getter for the pieces located on the black side.
-     * @return vector of pieces located on the black side, vector.
+     * Checks to see if the given coordinates are out of bounds.
+     * @param row, integer.
+     * @param column, integer.
+     * @return boolean.
      */
-    public Vector<Character> getBlackSide()
+    private boolean isOutOfBounds(int row, int column)
     {
-        Vector<Character> blackSide = new Vector<>(board.length + 2, '+');
-
-        int  i =0;
-        for(; i < board.length; i++)
+        if(row < 0 || column < 0 || row >= board.length || column >= board.length)
         {
-            blackSide.add(i,board[board.length-1][i]);
+            return true;
         }
-
-        blackSide.add(i,board[board.length-2][0]);
-        i++;
-        blackSide.add(i,board[board.length-2][board.length-1]);
-
-        return blackSide;
-    }
-
-    /**
-     * Getter for the pieces located on the white side.
-     * @return vector of pieces located on the white side, vector.
-     */
-    public Vector<Character> getWhiteSide()
-    {
-        Vector<Character> whiteSide = new Vector<>(board.length + 2, '+');
-
-        int i = 0;
-        for(; i < board.length; i++)
+        else
         {
-            whiteSide.add(i,board[0][i]);
+            return false;
         }
-
-        whiteSide.add(i,board[1][0]);
-        i++;
-        whiteSide.add(i,board[1][board.length-1]);
-
-        return whiteSide;
     }
 
     /**

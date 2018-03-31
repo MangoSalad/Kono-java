@@ -28,6 +28,42 @@ public class Tournament {
     }
 
     /**
+     * Getter for round number.
+     * @return roundNum, integer.
+     */
+    public int getRoundNum()
+    {
+        return roundNum;
+    }
+
+    /**
+     * Getter for computer score.
+     * @return computerScore, integer.
+     */
+    public int getComputerScore()
+    {
+        return computerScore;
+    }
+
+    /**
+     * Getter for human score.
+     * @return humanScore, integer.
+     */
+    public int getHumanScore()
+    {
+        return humanScore;
+    }
+
+    /**
+     * Getter for award points.
+     * @return award points, integer.
+     */
+    public int getAwardedPoints()
+    {
+        return this.awardedPoints;
+    }
+
+    /**
      * Setter for human score
      * @param humanScore
      */
@@ -64,33 +100,6 @@ public class Tournament {
     }
 
     /**
-     * Getter for round number.
-     * @return roundNum, integer.
-     */
-    public int getRoundNum()
-    {
-        return roundNum;
-    }
-
-    /**
-     * Getter for computer score.
-     * @return computerScore, integer.
-     */
-    public int getComputerScore()
-    {
-        return computerScore;
-    }
-
-    /**
-     * Getter for human score.
-     * @return humanScore, integer.
-     */
-    public int getHumanScore()
-    {
-        return humanScore;
-    }
-
-    /**
      * Adds to the human score.
      * @param addPoints  number of points to add to human score.
      */
@@ -115,14 +124,5 @@ public class Tournament {
     public void setAwardedPoints(int points)
     {
         this.awardedPoints = points;
-    }
-
-    /**
-     * Getter for award points.
-     * @return award points, integer.
-     */
-    public int getAwardedPoints()
-    {
-        return this.awardedPoints;
     }
 }

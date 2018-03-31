@@ -7,7 +7,7 @@ import java.util.Random;
 import java.util.Vector;
 
 /**
- * Created by mango on 3/23/18.
+ * Responsible for computer strategy.
  */
 
 public class Computer extends Player{
@@ -18,16 +18,16 @@ public class Computer extends Player{
     private final String BLOCK = "block";
     private final String CAPTURE = "capture";
 
-    String playerColor;
-    char pieceColor;
-    char opponentPieceColor;
+    private String playerColor;
+    private char pieceColor;
+    private char opponentPieceColor;
 
     private Random randomGenerator =  new Random();
 
     private char[][] board;
-    Vector<Pair<Integer, Integer>> availablePieces;
-    Vector<Pair<Integer, Integer>> availableSuperPieces;
-    Pair<Integer, Integer> closestOpponent;
+    private Vector<Pair<Integer, Integer>> availablePieces;
+    private Vector<Pair<Integer, Integer>> availableSuperPieces;
+    private Pair<Integer, Integer> closestOpponent;
 
     private TupleCoordinates coordinates;
 
@@ -87,6 +87,18 @@ public class Computer extends Player{
     }
 
     /**
+     * Getter for initial row coordinate.
+     * @return row, integer.
+     */
+    public int getInitialRow(){return coordinates.getInitialCoordinates().first;}
+
+    /**
+     * Getter for initial column coordinate.
+     * @return column, integer.
+     */
+    public int getInitialColumn(){return coordinates.getInitialCoordinates().second;}
+
+    /**
      * Responsible for decision-making for computer's play turn.
      * @param board current board state.
      */
@@ -134,15 +146,7 @@ public class Computer extends Player{
         }
     }
 
-    /**
-     * Getter for selecting random piece from available list of pieces.
-     * @return pair holding row/column of piece.
-     */
-    private Pair<Integer,Integer> getRandomPiece()
-    {
-        int randomNumber = randomGenerator.nextInt(availablePieces.size());
-        return availablePieces.elementAt(randomNumber);
-    }
+
 
     /**
      * Strategy for advancing a piece forward.
@@ -257,99 +261,6 @@ public class Computer extends Player{
         }
 
         return true;
-    }
-
-    /**
-     * Checks if a piece can move northeast.
-     * @param row
-     * @param column
-     * @return boolean
-     */
-    private boolean isMoveNorthEast(int row, int column)
-    {
-        if(isOutOfBounds(row-1,column+1))
-        {
-            return false;
-        }
-
-        if( board[row-1][column+1] == '+')
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    /**
-     * Checks if a piece can move northwest.
-     * @param row
-     * @param column
-     * @return boolean
-     */
-    private boolean isMoveNorthWest(int row, int column)
-    {
-        if(isOutOfBounds(row-1,column-1))
-        {
-            return false;
-        }
-
-        if( board[row-1][column-1] == '+')
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    /**
-     * Checks if a piece can move southeast.
-     * @param row
-     * @param column
-     * @return boolean
-     */
-    private boolean isMoveSouthEast(int row, int column)
-    {
-        if(isOutOfBounds(row+1,column+1))
-        {
-            return false;
-        }
-
-        if( board[row+1][column+1] == '+')
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    /**
-     * Checks if a piece can move southwest.
-     * @param row
-     * @param column
-     * @return boolean
-     */
-    private boolean isMoveSouthWest(int row, int column)
-    {
-        if(isOutOfBounds(row+1,column-1))
-        {
-            return false;
-        }
-
-        if( board[row+1][column-1] == '+')
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-
     }
 
     /**
@@ -468,6 +379,99 @@ public class Computer extends Player{
             }
         }
         return false;
+    }
+
+    /**
+     * Checks if a piece can move northeast.
+     * @param row
+     * @param column
+     * @return boolean
+     */
+    private boolean isMoveNorthEast(int row, int column)
+    {
+        if(isOutOfBounds(row-1,column+1))
+        {
+            return false;
+        }
+
+        if( board[row-1][column+1] == '+')
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Checks if a piece can move northwest.
+     * @param row
+     * @param column
+     * @return boolean
+     */
+    private boolean isMoveNorthWest(int row, int column)
+    {
+        if(isOutOfBounds(row-1,column-1))
+        {
+            return false;
+        }
+
+        if( board[row-1][column-1] == '+')
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Checks if a piece can move southeast.
+     * @param row
+     * @param column
+     * @return boolean
+     */
+    private boolean isMoveSouthEast(int row, int column)
+    {
+        if(isOutOfBounds(row+1,column+1))
+        {
+            return false;
+        }
+
+        if( board[row+1][column+1] == '+')
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Checks if a piece can move southwest.
+     * @param row
+     * @param column
+     * @return boolean
+     */
+    private boolean isMoveSouthWest(int row, int column)
+    {
+        if(isOutOfBounds(row+1,column-1))
+        {
+            return false;
+        }
+
+        if( board[row+1][column-1] == '+')
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
     }
 
     /**
@@ -899,5 +903,15 @@ public class Computer extends Player{
             }
         }
         return 1;
+    }
+
+    /**
+     * Getter for selecting random piece from available list of pieces.
+     * @return pair holding row/column of piece.
+     */
+    private Pair<Integer,Integer> getRandomPiece()
+    {
+        int randomNumber = randomGenerator.nextInt(availablePieces.size());
+        return availablePieces.elementAt(randomNumber);
     }
 }
